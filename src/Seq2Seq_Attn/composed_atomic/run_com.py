@@ -1,0 +1,40 @@
+from Seq2Seq_Attn.Model import EncoderRNN, AttnDecoderRNN
+import torch
+from Seq2Seq_Attn.composed_atomic.composed_training  import trainIters
+from Seq2Seq_Attn.composed_atomic.evaluate_com import evaluateRandomly,evaluateAndShowAttention
+from Seq2Seq_Attn.composed_atomic.data_com import input_lang_tr as input_lang1,output_lang_tr as output_lang1
+from Seq2Seq_Attn.composed_atomic.data_com import input_lang_te as input_lang2,output_lang_te as output_lang2
+from Seq2Seq_Attn.composed_atomic.data_com import training_pairs, test_pairs, master_data_tr, data_com_te
+from Seq2Seq_Attn.composed_atomic.data_com import MAX_LENGTH, pairs_tr as pairs1, pairs_te as pairs2
+
+use_cuda = torch.cuda.is_available()
+
+
+hidden_size = 64
+encoder1 = EncoderRNN(input_lang1.n_words, hidden_size)
+attn_decoder1 = AttnDecoderRNN(hidden_size, output_lang1.n_words,
+                               1, dropout_p=0.1,max_length=MAX_LENGTH)
+
+if use_cuda:
+    encoder1 = encoder1.cuda()
+    attn_decoder1 = attn_decoder1.cuda()
+
+trainIters(encoder1, attn_decoder1, 100, training_pairs,test_pairs, print_every=10, plot_every=10)
+
+print("Evalualte on Training Data")
+evaluateRandomly(encoder1, attn_decoder1, pairs1,input_lang1,output_lang1)
+
+evaluateAndShowAttention("t1 t4 10",encoder1,attn_decoder1, master_data_tr, input_lang1,output_lang1)
+evaluateAndShowAttention("t3 t4 01",encoder1,attn_decoder1, master_data_tr, input_lang1,output_lang1)
+evaluateAndShowAttention("t4 t2 00",encoder1,attn_decoder1, master_data_tr, input_lang1,output_lang1)
+evaluateAndShowAttention("t1 t2 11",encoder1,attn_decoder1, master_data_tr, input_lang1,output_lang1)
+
+print('')
+
+print("Evaluate on Test Data")
+evaluateRandomly(encoder1, attn_decoder1, pairs2,input_lang2,output_lang2)
+
+evaluateAndShowAttention("t1 t2 01",encoder1,attn_decoder1,data_com_te, input_lang2, output_lang2)
+evaluateAndShowAttention("t3 t1 11",encoder1,attn_decoder1,data_com_te, input_lang2, output_lang2)
+evaluateAndShowAttention("t4 t3 10",encoder1,attn_decoder1,data_com_te, input_lang2, output_lang2)
+evaluateAndShowAttention("t3 t2 00",encoder1,attn_decoder1,data_com_te, input_lang2, output_lang2)
