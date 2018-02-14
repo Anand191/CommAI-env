@@ -7,26 +7,19 @@ from Seq2Seq_Attn.composed_atomic.data_com import SOS_token, EOS_token, MAX_LENG
 import numpy as np
 import random
 
-use_cuda = torch.cuda.is_available()
-
-def evaluate(encoder, decoder, sentence, input_lang, output_lang, max_length=MAX_LENGTH):
+def evaluate(encoder, decoder, sentence, input_lang, output_lang, use_cuda=False, max_length=MAX_LENGTH):
     input_variable = variableFromSentence(input_lang, sentence)
     input_length = input_variable.size()[0]
+
     encoder_hidden = encoder.initHidden()
+    encoder_outputs, encoder_hidden = encoder(input_variable, encoder_hidden)
+    # encoder_outputs = Variable(torch.zeros(max_length, encoder.hidden_size))
+    # encoder_outputs = encoder_outputs.cuda() if use_cuda else encoder_outputs
 
-    encoder_outputs = Variable(torch.zeros(max_length, encoder.hidden_size))
-    encoder_outputs = encoder_outputs.cuda() if use_cuda else encoder_outputs
-
-    R = 0
-    if(input_length < MAX_LENGTH):
-        R = input_length
-    else:
-        R = MAX_LENGTH
-
-    for ei in range(R):
-        encoder_output, encoder_hidden = encoder(input_variable[ei],
-                                                 encoder_hidden)
-        encoder_outputs[ei] = encoder_outputs[ei] + encoder_output[0][0]
+    # for ei in range(R):
+    #     encoder_output, encoder_hidden = encoder(input_variable[ei],
+    #                                              encoder_hidden)
+    #     encoder_outputs[ei] = encoder_outputs[ei] + encoder_output[0][0]
 
     decoder_input = Variable(torch.LongTensor([[SOS_token]]))  # SOS
     decoder_input = decoder_input.cuda() if use_cuda else decoder_input
@@ -36,14 +29,11 @@ def evaluate(encoder, decoder, sentence, input_lang, output_lang, max_length=MAX
     decoded_words = []
     decoder_attentions = torch.zeros(max_length, max_length)
 
-    # if (input_length < MAX_LENGTH):
-    #     max_length = input_length
-
-
-    for di in range(R-1):
+    for di in range(input_length-1):
         decoder_output, decoder_hidden, decoder_attention = decoder(
-            decoder_input, decoder_hidden, encoder_outputs, target_attn=0, loss_func='na', training=False)
-        decoder_attentions[di] = decoder_attention.data
+            decoder_input, decoder_hidden, encoder_outputs)
+        #print(decoder_attention.squeeze(0))
+        decoder_attentions[di,:decoder_attention.size(2)] = decoder_attention.squeeze(0).squeeze(0).cpu().data
         topv, topi = decoder_output.data.topk(1)
         ni = topi[0][0]
         if ni == EOS_token:
@@ -55,14 +45,14 @@ def evaluate(encoder, decoder, sentence, input_lang, output_lang, max_length=MAX
         decoder_input = Variable(torch.LongTensor([[ni]]))
         decoder_input = decoder_input.cuda() if use_cuda else decoder_input
 
-    return decoded_words, decoder_attentions[:di + 1]
+    return decoded_words, decoder_attentions[:di+1,:len(encoder_outputs)]
 
-def evaluateRandomly(encoder, decoder, pairs, input_lang, output_lang, n=5):
+def evaluateRandomly(encoder, decoder, pairs, input_lang, output_lang,use_cuda, n=5):
     for i in range(n):
         pair = random.choice(pairs)
         print('>', pair[0])
         print('=', pair[1])
-        output_words, attentions = evaluate(encoder, decoder, pair[0], input_lang, output_lang)
+        output_words, attentions = evaluate(encoder, decoder, pair[0], input_lang, output_lang, use_cuda)
         output_sentence = ' '.join(output_words)
         print('<', output_sentence)
         print('')
@@ -70,9 +60,11 @@ def evaluateRandomly(encoder, decoder, pairs, input_lang, output_lang, n=5):
 
 def showAttention(input_sentence, output_words, attentions):
     # Set up figure with colorbar
+    attentions = attentions.numpy()
+    #attentions = np.exp(attentions)
     fig = plt.figure()
     ax = fig.add_subplot(111)
-    cax = ax.matshow(attentions.numpy(), cmap='bone')
+    cax = ax.matshow(attentions, cmap='bone')
     fig.colorbar(cax)
 
     # Set up axes
@@ -85,12 +77,29 @@ def showAttention(input_sentence, output_words, attentions):
     plt.show()
 
 
-def evaluateAndShowAttention(input_sentence,encoder1,attn_decoder1, master_data, input_lang, output_lang):
-    output_words, attentions = evaluate(encoder1, attn_decoder1, input_sentence, input_lang, output_lang)
-    print(attentions)
+def evaluateAndShowAttention(input_sentence,encoder1,attn_decoder1, master_data, input_lang, output_lang, use_cuda):
+
+    output_words, attentions = evaluate(encoder1, attn_decoder1, input_sentence, input_lang, output_lang, use_cuda)
+    #print(np.exp(attentions.numpy()))
+    ipt = input_sentence.split(' ')
+    nis = ''
+    if(len(ipt)==2):
+        row = np.where(master_data[:,0]==input_sentence)[0]
+        tgt = master_data[row,1][0].split(' ')[0]
+        nis = ipt[0]+'({})'.format(tgt)+' '+ipt[1]
+    else:
+        ipt2 = ipt[1:]
+        temp = ipt2[0]+' '+ipt2[1]
+        row = np.where(master_data[:, 0] == temp)[0]
+        tgt = master_data[row, 1][0].split(' ')[0]
+        ni = ipt2[0] + '({})'.format(tgt) + ' ' + ipt2[1]
+        temp2 = ipt[0]+' '+tgt
+        row2 = np.where(master_data[:, 0] == temp2)[0]
+        tgt2 = master_data[row2, 1][0].split(' ')[0]
+        nis = ipt[0]+ '({})'.format(tgt2)+' '+ni
     row_t = np.where(master_data[:,0]==input_sentence)[0]
     target = master_data[row_t,1]
     print('input =', input_sentence)
     print('target =', target)
     print('output =', ' '.join(output_words))
-    showAttention(input_sentence, output_words, attentions)
+    showAttention(nis, output_words, attentions)

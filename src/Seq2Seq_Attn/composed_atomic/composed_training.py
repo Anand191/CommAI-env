@@ -23,7 +23,7 @@ def timeSince(since, percent):
     return '%s (- %s)' % (asMinutes(s), asMinutes(rs))
 
 
-def trainIters(encoder, decoder, n_iters, training_pairs, test_pairs, print_every=1, plot_every=5, learning_rate=0.01):
+def trainIters(encoder, decoder, n_iters, training_pairs, test_pairs, use_cuda=False, print_every=1, plot_every=5, learning_rate=0.01):
     start = time.time()
     plot_losses = []
     print_loss_total = 0  # Reset every print_every
@@ -61,7 +61,7 @@ def trainIters(encoder, decoder, n_iters, training_pairs, test_pairs, print_ever
             target_variable = training_pair[1]
 
             loss,l1,l2,acc = train(input_variable, target_variable, encoder,
-                         decoder, encoder_optimizer, decoder_optimizer, criterion1, criterion2)
+                         decoder, encoder_optimizer, decoder_optimizer, criterion1, criterion2, use_cuda)
             temp_loss += loss
             tl1+=l1
             tl2 += l2
@@ -80,7 +80,7 @@ def trainIters(encoder, decoder, n_iters, training_pairs, test_pairs, print_ever
             input_var = test_pair[0]
             target_var = test_pair[1]
 
-            loss_t, acc_t, _ = test(encoder,decoder,input_var,target_var,criterion2)
+            loss_t, acc_t, _ = test(encoder,decoder,input_var,target_var,criterion2, use_cuda)
             test_l += loss_t
             test_a += acc_t
         print_test_acc += (test_a/len(test_pairs))

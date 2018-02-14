@@ -3,36 +3,32 @@ from torch.autograd import Variable
 from Seq2Seq_Attn.composed_atomic.data_com import SOS_token,MAX_LENGTH, EOS_token
 import numpy as np
 
-use_cuda = torch.cuda.is_available()
-
-
-
 
 def train(input_variable, target_variable, encoder, decoder, encoder_optimizer, decoder_optimizer, criterion1,
-          criterion2, max_length=MAX_LENGTH):
-
-    encoder_hidden = encoder.initHidden()
-
+          criterion2,use_cuda= False, max_length=MAX_LENGTH):
     encoder_optimizer.zero_grad()
     decoder_optimizer.zero_grad()
 
     input_length = input_variable.size()[0]
     target_length = target_variable.size()[0]
 
-    encoder_outputs = Variable(torch.zeros(max_length, encoder.hidden_size))
-    encoder_outputs = encoder_outputs.cuda() if use_cuda else encoder_outputs
+    encoder_hidden = encoder.initHidden()
+    encoder_outputs, encoder_hidden = encoder(input_variable, encoder_hidden)
+    # encoder_outputs = Variable(torch.zeros(input_length, encoder.hidden_size))
+    # encoder_outputs = encoder_outputs.cuda() if use_cuda else encoder_outputs
 
     loss = 0
     l1 = 0
     l2 = 0
     acc = 0
+    ponder_step = input_length - 1
 
     attn_targets = torch.FloatTensor(np.eye(max_length))
 
-    for ei in range(input_length):
-        encoder_output, encoder_hidden = encoder(
-            input_variable[ei], encoder_hidden)
-        encoder_outputs[ei] = encoder_output[0][0]
+    # for ei in range(input_length):
+    #     encoder_output, encoder_hidden = encoder(
+    #         input_variable[ei], encoder_hidden)
+    #     encoder_outputs[ei] = encoder_output[0][0]
 
     decoder_input = Variable(torch.LongTensor([[SOS_token]]))
     decoder_input = decoder_input.cuda() if use_cuda else decoder_input
@@ -41,17 +37,13 @@ def train(input_variable, target_variable, encoder, decoder, encoder_optimizer, 
 
     # Without teacher forcing: use its own predictions as the next input
     for di in range(target_length-2):
-        i = -2
+        i = input_length-2
         loss1 = 0
-        for p_step in range(input_length-1):
-            # if(p_step == input_length-1):
-            #     attn_target = Variable(torch.nonzero(attn_targets[-1])[0])
-            # else:
+        for p_step in range(ponder_step):
             attn_target = Variable(torch.nonzero(attn_targets[i])[0])
             attn_target = attn_target.cuda() if use_cuda else attn_target
-            decoder_output, decoder_hidden, decoder_attention, decoder_attn_loss= decoder(
-                decoder_input, decoder_hidden, encoder_outputs, attn_target, criterion1,training=True)
-            loss1 += decoder_attn_loss
+            decoder_output, decoder_hidden, decoder_attention = decoder(decoder_input, decoder_hidden, encoder_outputs)
+            loss1 += criterion1(decoder_attention.squeeze(0), attn_target)
             topv, topi = decoder_output.data.topk(1)
             ni = topi[0][0]
 
@@ -67,8 +59,6 @@ def train(input_variable, target_variable, encoder, decoder, encoder_optimizer, 
         l2 = loss1.data[0]
         loss += loss1
 
-        #print(decoder_output,target_variable[di])
-
         tv,ti = decoder_output.data.topk(1)
         do = ti[0][0]
         chk = Variable(torch.LongTensor([do]))
@@ -82,4 +72,4 @@ def train(input_variable, target_variable, encoder, decoder, encoder_optimizer, 
     encoder_optimizer.step()
     decoder_optimizer.step()
 
-    return (loss.data[0]/(target_length-1),l1/(target_length-1),l2/(target_length-1),acc)
+    return (loss.data[0]/ponder_step,l1/ponder_step,l2/ponder_step,acc)
