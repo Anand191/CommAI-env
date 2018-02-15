@@ -33,6 +33,7 @@ for key,value in composed_test.items():
         row += 1
 
 master_data_tr = np.vstack((data_atomic,data_com_tr))
+master_data_te = np.vstack((data_atomic,data_com_te))
 
 SOS_token = 0
 EOS_token = 1
@@ -73,8 +74,8 @@ def readLangs(lang1, lang2, data, reverse=False):
 
     return input_lang, output_lang, pairs
 
-def prepareData(lang1, lang2, reverse=False):
-    input_lang, output_lang, pairs = readLangs(lang1, lang2, reverse)
+def prepareData(lang1,lang2, reverse=False):
+    input_lang, output_lang, pairs = readLangs(lang1,lang2, reverse)
     print("Read %s sentence pairs" % len(pairs))
     print("Trimmed to %s sentence pairs" % len(pairs))
     print("Counting words...")
@@ -88,7 +89,9 @@ def prepareData(lang1, lang2, reverse=False):
 
 
 input_lang_tr, output_lang_tr, pairs_tr = prepareData('task_tr', 'out_tr',master_data_tr)
-input_lang_te, output_lang_te, pairs_te = prepareData('task_te', 'out_te',data_com_te)
+input_lang_te, output_lang_te, pairs_te = prepareData('task_te', 'out_te',master_data_te)
+input_lang_te, output_lang_te = input_lang_tr, output_lang_tr
+
 print(random.choice(pairs_tr))
 print(random.choice(pairs_te))
 

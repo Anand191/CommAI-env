@@ -32,7 +32,7 @@ def test(encoder, decoder, input_variable, target_variable,criterion2, use_cuda 
     for di in range(input_length-1):
         decoder_output, decoder_hidden, decoder_attention = decoder(
             decoder_input, decoder_hidden, encoder_outputs)
-        decoder_attentions[di] = decoder_attention.data
+        decoder_attentions[di, :decoder_attention.size(2)] = decoder_attention.squeeze(0).squeeze(0).cpu().data
         topv, topi = decoder_output.data.topk(1)
         ni = topi[0][0]
 
@@ -53,4 +53,4 @@ def test(encoder, decoder, input_variable, target_variable,criterion2, use_cuda 
     chk = chk.cuda() if use_cuda else chk
     if (chk.data[0] == target_variable[0].data[0]):
         acc = 1
-    return (loss.data[0]/(target_length-1),acc,decoder_attentions[:di + 1])
+    return (loss.data[0]/(input_length-1),acc,decoder_attentions[:di + 1])

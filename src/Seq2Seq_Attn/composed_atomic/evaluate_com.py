@@ -58,7 +58,7 @@ def evaluateRandomly(encoder, decoder, pairs, input_lang, output_lang,use_cuda, 
         print('')
 
 
-def showAttention(input_sentence, output_words, attentions):
+def showAttention(input_sentence, output_words, attentions,name):
     # Set up figure with colorbar
     attentions = attentions.numpy()
     #attentions = np.exp(attentions)
@@ -74,10 +74,11 @@ def showAttention(input_sentence, output_words, attentions):
     # Show label at every tick
     ax.xaxis.set_major_locator(ticker.MultipleLocator(1))
     ax.yaxis.set_major_locator(ticker.MultipleLocator(1))
+    plt.savefig("{}.png".format(name))
     plt.show()
 
 
-def evaluateAndShowAttention(input_sentence,encoder1,attn_decoder1, master_data, input_lang, output_lang, use_cuda):
+def evaluateAndShowAttention(input_sentence,encoder1,attn_decoder1, master_data, input_lang, output_lang, use_cuda,name):
 
     output_words, attentions = evaluate(encoder1, attn_decoder1, input_sentence, input_lang, output_lang, use_cuda)
     #print(np.exp(attentions.numpy()))
@@ -102,4 +103,4 @@ def evaluateAndShowAttention(input_sentence,encoder1,attn_decoder1, master_data,
     print('input =', input_sentence)
     print('target =', target)
     print('output =', ' '.join(output_words))
-    showAttention(nis, output_words, attentions)
+    showAttention(nis, output_words, attentions,name)
