@@ -13,7 +13,7 @@ data_atomic = np.zeros((len(atomic_tasks)*4,2),dtype=object)
 row = 0
 for key,value in atomic_tasks.items():
     for k, v in atomic_tasks[key].items():
-        data_atomic[row,0] = key+' '+k
+        data_atomic[row,0] = k+' '+key
         data_atomic[row,1] = v+ ' '+k
         row += 1
 
@@ -21,14 +21,18 @@ data_com_tr = np.zeros((len(composed_train)*2,2),dtype=object)
 data_com_te = np.zeros((len(composed_test)*2,2),dtype=object)
 row = 0
 for key,value in composed_train.items():
+    temp = key.split(' ')
+    rev_key = temp[1]+' '+temp[0]
     for k, v in composed_train[key].items():
-        data_com_tr[row,0] = key+' '+k
+        data_com_tr[row,0] = k+' '+rev_key
         data_com_tr[row,1] = v+ ' '+k
         row += 1
 row = 0
 for key,value in composed_test.items():
+    temp = key.split(' ')
+    rev_key = temp[1] + ' ' + temp[0]
     for k, v in composed_test[key].items():
-        data_com_te[row,0] = key+' '+k
+        data_com_te[row,0] = k+' '+rev_key
         data_com_te[row,1] = v+ ' '+k
         row += 1
 

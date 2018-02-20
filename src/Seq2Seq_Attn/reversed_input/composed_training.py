@@ -2,8 +2,8 @@ import torch.nn as nn
 import matplotlib.ticker as ticker
 from torch import optim
 import matplotlib.pyplot as plt
-from Seq2Seq_Attn.composed_atomic.train_com import train
-from Seq2Seq_Attn.composed_atomic.test_com import test
+from Seq2Seq_Attn.reversed_input.train_com import train
+from Seq2Seq_Attn.reversed_input.test_com import test
 
 import time
 import math

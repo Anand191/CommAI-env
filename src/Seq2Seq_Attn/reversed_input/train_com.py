@@ -1,6 +1,6 @@
 import torch
 from torch.autograd import Variable
-from Seq2Seq_Attn.composed_atomic.data_com import SOS_token,MAX_LENGTH, EOS_token
+from Seq2Seq_Attn.reversed_input.data_com import SOS_token,MAX_LENGTH, EOS_token
 import numpy as np
 
 
@@ -37,7 +37,7 @@ def train(input_variable, target_variable, encoder, decoder, encoder_optimizer, 
 
     # Without teacher forcing: use its own predictions as the next input
     for di in range(target_length-2):
-        i = input_length-2
+        i = 0 #input_length-2
         loss1 = 0
         for p_step in range(ponder_step):
             attn_target = Variable(torch.nonzero(attn_targets[i])[0])
@@ -53,7 +53,7 @@ def train(input_variable, target_variable, encoder, decoder, encoder_optimizer, 
                 loss += criterion2(decoder_output, target_variable[-2])
             if ni == EOS_token:
                 break
-            i -= 1
+            i += 1
         loss += criterion2(decoder_output, target_variable[di])
         l1 = loss.data[0]
         l2 = loss1.data[0]

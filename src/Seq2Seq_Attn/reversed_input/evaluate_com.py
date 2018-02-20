@@ -2,8 +2,8 @@ import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 import torch
 from torch.autograd import Variable
-from Seq2Seq_Attn.composed_atomic.data_com import variableFromSentence
-from Seq2Seq_Attn.composed_atomic.data_com import SOS_token, EOS_token, MAX_LENGTH
+from Seq2Seq_Attn.reversed_input.data_com import variableFromSentence
+from Seq2Seq_Attn.reversed_input.data_com import SOS_token, EOS_token, MAX_LENGTH
 import numpy as np
 import random
 
@@ -74,8 +74,8 @@ def showAttention(input_sentence, output_words, attentions,name):
     # Show label at every tick
     ax.xaxis.set_major_locator(ticker.MultipleLocator(1))
     ax.yaxis.set_major_locator(ticker.MultipleLocator(1))
-    #plt.savefig("{}.png".format(name))
-    plt.show()
+    plt.savefig("{}.png".format(name))
+    #plt.show()
 
 
 def evaluateAndShowAttention(input_sentence,encoder1,attn_decoder1, master_data, input_lang, output_lang, use_cuda,name):
@@ -87,17 +87,17 @@ def evaluateAndShowAttention(input_sentence,encoder1,attn_decoder1, master_data,
     if(len(ipt)==2):
         row = np.where(master_data[:,0]==input_sentence)[0]
         tgt = master_data[row,1][0].split(' ')[0]
-        nis = ipt[0]+'({})'.format(tgt)+' '+ipt[1]
+        nis = ipt[0]+' '+ipt[1] + '({})'.format(tgt)
     else:
-        ipt2 = ipt[1:]
+        ipt2 = ipt[:-1]
         temp = ipt2[0]+' '+ipt2[1]
         row = np.where(master_data[:, 0] == temp)[0]
         tgt = master_data[row, 1][0].split(' ')[0]
-        ni = ipt2[0] + '({})'.format(tgt) + ' ' + ipt2[1]
-        temp2 = ipt[0]+' '+tgt
+        ni = ipt2[0]  + ' ' + ipt2[1] + '({})'.format(tgt)
+        temp2 = tgt + ' ' + ipt[-1]
         row2 = np.where(master_data[:, 0] == temp2)[0]
         tgt2 = master_data[row2, 1][0].split(' ')[0]
-        nis = ipt[0]+ '({})'.format(tgt2)+' '+ni
+        nis = ni + ' ' + ipt[-1]+ '({})'.format(tgt2)
     # else:
     #     ipt0 = ipt[1:]
     #     ipt2 = ipt0[1:]

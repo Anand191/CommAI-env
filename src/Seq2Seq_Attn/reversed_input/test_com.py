@@ -1,6 +1,6 @@
 import torch
 from torch.autograd import Variable
-from Seq2Seq_Attn.composed_atomic.data_com import MAX_LENGTH, SOS_token, EOS_token, output_lang_te as output_lang
+from Seq2Seq_Attn.reversed_input.data_com import MAX_LENGTH, SOS_token, EOS_token, output_lang_te as output_lang
 
 def test(encoder, decoder, input_variable, target_variable,criterion2, use_cuda = False,max_length=MAX_LENGTH):
 
