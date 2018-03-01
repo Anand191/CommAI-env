@@ -85,6 +85,7 @@ def trainIters(encoder, decoder, n_iters, training_pairs, test_pairs, use_cuda=F
         avg_l1 += (tl1/len(training_pairs))
         avg_l2 += (tl2 / len(training_pairs))
 
+        shuffle(test_pairs)
         for j in range(len(test_pairs)):
             test_pair = test_pairs[j]
             input_var = test_pair[0]
