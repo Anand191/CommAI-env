@@ -1,8 +1,9 @@
 import tasks.micro.split_lookup_tables_1 as tasks
 
 def atomic():
-    tables = [tasks.LookupTaskR2D1(), tasks.LookupTaskR2D2(), tasks.LookupTaskR2D3(), tasks.LookupTaskR2D4()]
-    #tasks.LookupTaskR2D5(), tasks.LookupTaskR2D6()
+    tables = [tasks.LookupTaskR2D1(), tasks.LookupTaskR2D2(), tasks.LookupTaskR2D3(), tasks.LookupTaskR2D4(),
+              tasks.LookupTaskR2D5(), tasks.LookupTaskR2D6()]
+    #
     atomic = {}
     j = 1
     while (j<=len(tables)):
@@ -39,14 +40,23 @@ def composed():
                     tasks.FuncLookupTestTaskR2D3_1(), tasks.FuncLookupTestTaskR2D3_2(), tasks.FuncLookupTestTaskR2D3_4(),
                     tasks.FuncLookupTestTaskR2D4_1(), tasks.FuncLookupTestTaskR2D4_2(), tasks.FuncLookupTestTaskR2D4_3(),
                    tasks.FuncLookupTestTaskR2D4_4(),tasks.FuncLookupTestTaskR2D3_3(),tasks.FuncLookupTestTaskR2D2_2(),
-                   tasks.FuncLookupTestTaskR2D1_1()]
-                # , tasks.FuncLookupTestTaskR2D5_5(), tasks.FuncLookupTestTaskR2D5_6(),tasks.FuncLookupTestTaskR2D6_6(), tasks.FuncLookupTestTaskR2D6_5()
+                   tasks.FuncLookupTestTaskR2D1_1(), tasks.FuncLookupTestTaskR2D5_5(), tasks.FuncLookupTestTaskR2D5_6(),
+                   tasks.FuncLookupTestTaskR2D6_6(), tasks.FuncLookupTestTaskR2D6_5(), tasks.FuncLookupTaskR2D5_5(),
+                   tasks.FuncLookupTaskR2D5_6(), tasks.FuncLookupTaskR2D6_6(), tasks.FuncLookupTaskR2D6_5()]
+
+    infer_tables = [tasks.FuncLookupTaskR2D4_2_3(), tasks.FuncLookupTestTaskR2D4_2_3(), tasks.FuncLookupTaskR2D1_2_3(),
+                    tasks.FuncLookupTestTaskR2D1_2_3(),tasks.FuncLookupTaskR2D1_3_4(),tasks.FuncLookupTestTaskR2D1_3_4(),
+                    tasks.FuncLookupTestTaskR2D4_5_6(), tasks.FuncLookupTestTaskR2D2_6_5(), tasks.FuncLookupTaskR2D1_2_4(),
+                    tasks.FuncLookupTestTaskR2D1_2_4(),tasks.FuncLookupTaskR2D3_2_4(),tasks.FuncLookupTestTaskR2D3_2_4(),
+                    tasks.FuncLookupTaskR2D2_3_5(),tasks.FuncLookupTestTaskR2D2_3_5()]
 
     comp_seq = [(1,2), (1,3), (1,4), (2,1), (2,3), (2,4), (3,1), (3,2), (3,4), (4,1), (4,2), (4,3)]
     comp_seq_t = [(1, 2), (1, 3), (1, 4), (2, 1), (2, 3), (2, 4), (3, 1), (3, 2), (3, 4), (4, 1), (4, 2), (4, 3),
-                  (4, 4),(3, 3),(2, 2),(1, 1)] #,(5, 5), (5, 6), (6, 6), (6, 5)
+                  (4, 4),(3, 3),(2, 2),(1, 1) , (5, 5), (5, 6), (6, 6), (6, 5),(5,5),(5,6),(6,6),(6,5)]
+    comp_seq_i = [(4,2,3),(4,2,3),(1,2,3),(1,2,3),(1,3,4),(1,3,4),(4,5,6),(2,6,5),(1,2,4),(1,2,4),(3,2,4),(3,2,4),
+                  (2,3,5),(2,3,5)]
 
-    composed_train, composed_test = {}, {}
+    composed_train, composed_test, composed_infer = {}, {}, {}
 
     def look(lt,t,prev):
         while True:
@@ -84,10 +94,30 @@ def composed():
             key_te = 't{} t{}'.format(comp_seq_t[i - 1][1], comp_seq_t[i - 1][0])
         else:
             key_te = 't{} t{} t{}'.format(comp_seq_t[i - 1][2], comp_seq_t[i - 1][1], comp_seq_t[i - 1][0] )
-        composed_test[key_te] = te
+        if(key_te in list(composed_test.keys())):
+            for k, v in te.items():
+                composed_test[key_te][k] = v
+        else:
+            composed_test[key_te] = te
         i += 1
 
+    k = 1
+    while (k <= len(comp_seq_i)):
+        lt_if = infer_tables[k - 1]
+        prev = 'ch'
+        infer = look(lt_if, {}, prev)
+        if (len(comp_seq_i[k - 1]) == 2):
+            key_te = 't{} t{}'.format(comp_seq_i[k - 1][1], comp_seq_i[k - 1][0])
+        else:
+            key_te = 't{} t{} t{}'.format(comp_seq_i[k - 1][2], comp_seq_i[k - 1][1], comp_seq_i[k - 1][0])
+        if (key_te in list(composed_infer.keys())):
+            for key, v in infer.items():
+                composed_infer[key_te][key] = v
+        else:
+            composed_infer[key_te] = infer
+        k += 1
 
-    return (composed_train,composed_test)
+
+    return (composed_train,composed_test,composed_infer)
 
 com = composed()
