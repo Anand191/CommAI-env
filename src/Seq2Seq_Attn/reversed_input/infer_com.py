@@ -1,8 +1,11 @@
 import torch
+import torch.nn as nn
+from torch import optim
 from torch.autograd import Variable
-from Seq2Seq_Attn.reversed_input.data_com import MAX_LENGTH, SOS_token, output_lang_te as output_lang, EOS_token
+from Seq2Seq_Attn.reversed_input.data_com import MAX_LENGTH, SOS_token, output_lang_if as output_lang, EOS_token
 
-def test(encoder, decoder, input_variable, target_variable,criterion2, use_cuda = False,max_length=MAX_LENGTH):
+
+def inference(encoder, decoder, input_variable, target_variable,criterion2, use_cuda = False,max_length=MAX_LENGTH):
 
     input_length = input_variable.size()[0]
     target_length = target_variable.size()[0]
@@ -10,16 +13,8 @@ def test(encoder, decoder, input_variable, target_variable,criterion2, use_cuda 
     encoder_hidden = encoder.initHidden()
     encoder_outputs, encoder_hidden = encoder(input_variable, encoder_hidden)
 
-    # encoder_outputs = Variable(torch.zeros(input_length, encoder.hidden_size))
-    # encoder_outputs = encoder_outputs.cuda() if use_cuda else encoder_outputs
-
     loss = 0
     acc = 0
-
-    # for ei in range(input_length):
-    #     encoder_output, encoder_hidden = encoder(input_variable[ei],
-    #                                              encoder_hidden)
-    #     encoder_outputs[ei] = encoder_outputs[ei] + encoder_output[0][0]
 
     decoder_input = Variable(torch.LongTensor([[SOS_token]]))  # SOS
     decoder_input = decoder_input.cuda() if use_cuda else decoder_input
@@ -56,3 +51,26 @@ def test(encoder, decoder, input_variable, target_variable,criterion2, use_cuda 
     else:
         acc = 0
     return (loss.data[0]/(input_length-1),acc,decoder_attentions[:di + 1])
+
+
+
+def inferIters(encoder, decoder, infer_pairs, use_cuda=False):
+
+    print_loss_total = 0  # Reset every print_every
+    print_acc_total = 0
+    criterion2 = nn.NLLLoss()
+    test_l, test_a = 0, 0
+
+    for j in range(len(infer_pairs)):
+        infer_pair = infer_pairs[j]
+        input_var = infer_pair[0]
+        target_var = infer_pair[1]
+
+        loss_t, acc_t, _ = inference(encoder,decoder,input_var,target_var,criterion2, use_cuda)
+        test_l += loss_t
+        test_a += acc_t
+    print_acc_total += (test_a/len(infer_pairs))
+
+    print_loss_total += (test_l/len(infer_pairs))
+
+    return(print_loss_total,print_acc_total)

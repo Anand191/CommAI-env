@@ -1,9 +1,10 @@
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
+import matplotlib as mpl
 import torch
 from torch.autograd import Variable
 from Seq2Seq_Attn.reversed_input.data_com import variableFromSentence
-from Seq2Seq_Attn.reversed_input.data_com import SOS_token, EOS_token, MAX_LENGTH
+from Seq2Seq_Attn.reversed_input.data_com import SOS_token, MAX_LENGTH, EOS_token
 import numpy as np
 import random
 
@@ -45,7 +46,7 @@ def evaluate(encoder, decoder, sentence, input_lang, output_lang, use_cuda=False
         decoder_input = Variable(torch.LongTensor([[ni]]))
         decoder_input = decoder_input.cuda() if use_cuda else decoder_input
 
-    return decoded_words, decoder_attentions[:di+1,:len(encoder_outputs)]
+    return decoded_words, decoder_attentions[:di+1,:len(encoder_outputs)-1]
 
 def evaluateRandomly(encoder, decoder, pairs, input_lang, output_lang,use_cuda, n=5):
     for i in range(n):
@@ -58,64 +59,64 @@ def evaluateRandomly(encoder, decoder, pairs, input_lang, output_lang,use_cuda, 
         print('')
 
 
-def showAttention(input_sentence, output_words, attentions,name):
+def showAttention(input_sentence, output_words, attentions,name,colour):
     # Set up figure with colorbar
     attentions = attentions.numpy()
-    #attentions = np.exp(attentions)
     fig = plt.figure()
     ax = fig.add_subplot(111)
-    cax = ax.matshow(attentions, cmap='bone')
-    fig.colorbar(cax)
+    ax.yaxis.tick_right()
+    cax = ax.matshow(attentions, cmap='bone', vmin=0, vmax=1)
+    #fig.colorbar(cax)
+    cbaxes = fig.add_axes([0.05, 0.1, 0.03, 0.8])
+    cb = plt.colorbar(cax, cax=cbaxes)
+    cbaxes.yaxis.set_ticks_position('left')
 
     # Set up axes
-    ax.set_xticklabels([''] + input_sentence.split(' ') +['<EOS>'], rotation=90) #
+    ax.set_xticklabels([''] + input_sentence.split(' ') , rotation=0) #+['<EOS>']
     ax.set_yticklabels([''] + output_words)
+
+    #Colour ticks
+    for ytick, color in zip(ax.get_yticklabels()[1:], colour):
+        ytick.set_color(color)
 
     # Show label at every tick
     ax.xaxis.set_major_locator(ticker.MultipleLocator(1))
     ax.yaxis.set_major_locator(ticker.MultipleLocator(1))
+
+    #X and Y labels
+    ax.set_xlabel("INPUT")
+    ax.set_ylabel("OUTPUT")
+    ax.yaxis.set_label_position('right')
+    ax.xaxis.set_label_position('top')
+
     plt.savefig("{}.png".format(name))
-    #plt.show()
+    plt.show()
 
 
 def evaluateAndShowAttention(input_sentence,encoder1,attn_decoder1, master_data, input_lang, output_lang, use_cuda,name):
 
     output_words, attentions = evaluate(encoder1, attn_decoder1, input_sentence, input_lang, output_lang, use_cuda)
-    #print(np.exp(attentions.numpy()))
+
     ipt = input_sentence.split(' ')
-    nis = ''
-    if(len(ipt)==2):
-        row = np.where(master_data[:,0]==input_sentence)[0]
-        tgt = master_data[row,1][0].split(' ')[0]
-        nis = ipt[0]+' '+ipt[1] + '({})'.format(tgt)
-    else:
-        ipt2 = ipt[:-1]
-        temp = ipt2[0]+' '+ipt2[1]
+    nis = ipt[0]
+    tgt = ipt[0]
+    i = 1
+    colour = []
+    while(i<=len(ipt)):
+        if(output_words[i-1]==tgt):
+            colour.append('g')
+        else:
+            colour.append('r')
+        if(i==len(ipt)):
+            break
+        temp = tgt + ' ' + ipt[i]
         row = np.where(master_data[:, 0] == temp)[0]
-        tgt = master_data[row, 1][0].split(' ')[0]
-        ni = ipt2[0]  + ' ' + ipt2[1] + '({})'.format(tgt)
-        temp2 = tgt + ' ' + ipt[-1]
-        row2 = np.where(master_data[:, 0] == temp2)[0]
-        tgt2 = master_data[row2, 1][0].split(' ')[0]
-        nis = ni + ' ' + ipt[-1]+ '({})'.format(tgt2)
-    # else:
-    #     ipt0 = ipt[1:]
-    #     ipt2 = ipt0[1:]
-    #     temp = ipt2[0] + ' ' + ipt2[1]
-    #     row = np.where(master_data[:, 0] == temp)[0]
-    #     tgt = master_data[row, 1][0].split(' ')[0]
-    #     ni = ipt2[0] + '({})'.format(tgt) + ' ' + ipt2[1]
-    #     temp2 = ipt0[0] + ' ' + tgt
-    #     row2 = np.where(master_data[:, 0] == temp2)[0]
-    #     tgt2 = master_data[row2, 1][0].split(' ')[0]
-    #     ni2 = ipt0[0] + '({})'.format(tgt2) + ' ' + ni
-    #     temp3 = ipt[0] + ' '+tgt2
-    #     row3 = np.where(master_data[:,0]==temp3)[0]
-    #     tgt3 = master_data[row3,1][0].split(' ')[0]
-    #     nis = ipt[0] + '({})'.format(tgt3) + ' ' +ni2
+        tgt = master_data[row, 1][0].split(' ')[1]
+        nis += ' ' +ipt[i] + '({})'.format(tgt)
+        i+=1
     row_t = np.where(master_data[:,0]==input_sentence)[0]
     target = master_data[row_t,1]
     print('input =', input_sentence)
     print('target =', target)
     print('output =', ' '.join(output_words))
-    showAttention(nis, output_words, attentions,name)
+    showAttention(input_sentence, output_words, attentions,name,colour)

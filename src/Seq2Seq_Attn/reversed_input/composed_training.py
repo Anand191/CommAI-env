@@ -4,6 +4,7 @@ from torch import optim
 import matplotlib.pyplot as plt
 from Seq2Seq_Attn.reversed_input.train_com import train
 from Seq2Seq_Attn.reversed_input.test_com import test
+from Seq2Seq_Attn.reversed_input.checkpoint import checkpoint
 
 import time
 import math
@@ -44,6 +45,12 @@ def trainIters(encoder, decoder, n_iters, training_pairs, test_pairs, use_cuda=F
     avg_l1 = 0
     avg_l2 = 0
 
+    best_acc = 0
+    echk = './Encoder_Weights'
+    dchk = './Decoder_Weights'
+
+    saver_e = checkpoint(encoder,echk)
+    saver_d = checkpoint(decoder,dchk)
 
     encoder_optimizer = optim.SGD(encoder.parameters(), lr=learning_rate)
     decoder_optimizer = optim.SGD(decoder.parameters(), lr=learning_rate)
@@ -105,12 +112,18 @@ def trainIters(encoder, decoder, n_iters, training_pairs, test_pairs, use_cuda=F
             print_test_acc = 0
             print_test_loss = 0
             avg_l1,avg_l2 = 0,0
+
             print('%s %s (%d %d%%) %.4f %.4f %.4f %.4f' % ("Train",timeSince(start, iter / n_iters),
                                          iter, iter / n_iters * 100, print_loss_avg,avg_l1_avg,avg_l2_avg, print_acc_avg))
             print('')
             print('%s %s (%d %d%%) %.4f %.4f' % ("Test", timeSince(start, iter / n_iters),
                                                            iter, iter / n_iters * 100, print_test_l_avg,print_test_a_avg ))
             print('')
+
+            saver_e.save(print_test_a_avg,best_acc,iter+1)
+            saver_d.save(print_test_a_avg, best_acc, iter + 1)
+
+            best_acc = print_test_a_avg
 
         if iter % plot_every == 0:
             plot_loss_avg = plot_loss_total / plot_every

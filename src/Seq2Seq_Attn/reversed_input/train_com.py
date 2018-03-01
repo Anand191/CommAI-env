@@ -1,6 +1,6 @@
 import torch
 from torch.autograd import Variable
-from Seq2Seq_Attn.reversed_input.data_com import SOS_token,MAX_LENGTH, EOS_token
+from Seq2Seq_Attn.reversed_input.data_com import SOS_token,MAX_LENGTH , EOS_token
 import numpy as np
 
 
@@ -21,7 +21,7 @@ def train(input_variable, target_variable, encoder, decoder, encoder_optimizer, 
     l1 = 0
     l2 = 0
     acc = 0
-    ponder_step = input_length - 1
+    ponder_step = input_length-1
 
     attn_targets = torch.FloatTensor(np.eye(max_length))
 
@@ -43,18 +43,18 @@ def train(input_variable, target_variable, encoder, decoder, encoder_optimizer, 
             attn_target = Variable(torch.nonzero(attn_targets[i])[0])
             attn_target = attn_target.cuda() if use_cuda else attn_target
             decoder_output, decoder_hidden, decoder_attention = decoder(decoder_input, decoder_hidden, encoder_outputs)
-            loss1 += criterion1(decoder_attention.squeeze(0), attn_target)
+            loss1 += criterion2(torch.log(decoder_attention).squeeze(0), attn_target)
             topv, topi = decoder_output.data.topk(1)
             ni = topi[0][0]
 
             decoder_input = Variable(torch.LongTensor([[ni]]))
             decoder_input = decoder_input.cuda() if use_cuda else decoder_input
             if (p_step == 0):
-                loss += criterion2(decoder_output, target_variable[-2])
+                loss += criterion2(decoder_output, target_variable[0])
             if ni == EOS_token:
                 break
             i += 1
-        loss += criterion2(decoder_output, target_variable[di])
+        loss += criterion2(decoder_output, target_variable[-2])
         l1 = loss.data[0]
         l2 = loss1.data[0]
         loss += loss1
@@ -63,11 +63,10 @@ def train(input_variable, target_variable, encoder, decoder, encoder_optimizer, 
         do = ti[0][0]
         chk = Variable(torch.LongTensor([do]))
         chk = chk.cuda() if use_cuda else chk
-        if(chk.data[0] == target_variable[di].data[0]):
+        if(chk.data[0] == target_variable[-2].data[0]):
             acc = 1
         else:
             acc = 0
-        # print(loss)
 
     loss.backward()
 

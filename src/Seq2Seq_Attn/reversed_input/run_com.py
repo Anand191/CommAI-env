@@ -24,11 +24,11 @@ for i in range(1):
         encoder1 = encoder1.cuda()
         attn_decoder1 = attn_decoder1.cuda()
 
-    test_acc = trainIters(encoder1, attn_decoder1, 500, training_pairs,test_pairs, use_cuda, print_every=10, plot_every=10)
+    test_acc = trainIters(encoder1, attn_decoder1, 500, training_pairs,test_pairs, use_cuda, print_every=20, plot_every=10)
     test_accs[i,0] = i
     test_accs[i,1] = test_acc
 # df = pd.DataFrame(test_accs,columns=['Experiment No.', 'Final Test Accuracy'])
-# df.to_csv("final_test_acc_wo_attn.csv")
+# df.to_csv("final_test_acc_attn_t5t6.csv")
 
 print("Evalualte on Training Data")
 evaluateRandomly(encoder1, attn_decoder1, pairs1,input_lang1,output_lang1, use_cuda)
@@ -43,21 +43,18 @@ evaluateRandomly(encoder1, attn_decoder1, pairs1,input_lang1,output_lang1, use_c
 print("Evaluate on Test Data")
 evaluateRandomly(encoder1, attn_decoder1, pairs2,input_lang2,output_lang2, use_cuda)
 
-for i in range(master_data_te.shape[0]):
-    ipt_sentence = master_data_te[i,0]
-    if(len(ipt_sentence.split(' '))==2):
-        continue
-    else:
-        name = 'test'+'{}'.format(i)
-        evaluateAndShowAttention(ipt_sentence, encoder1, attn_decoder1, master_data_te, input_lang2, output_lang2, use_cuda,name)
+# for i in range(56,master_data_te.shape[0]):
+#     ipt_sentence = master_data_te[i,0]
+#     if(len(ipt_sentence.split(' '))==2):
+#         continue
+#     else:
+#         name = 'test'+'{}'.format(i)
+#         evaluateAndShowAttention(ipt_sentence, encoder1, attn_decoder1, master_data_te, input_lang2, output_lang2,
+#                                  use_cuda,name)
 
-# evaluateAndShowAttention("00 t2",encoder1,attn_decoder1,master_data_te, input_lang2, output_lang2, use_cuda, "test1")
-# evaluateAndShowAttention("01 t3",encoder1,attn_decoder1,master_data_te, input_lang2, output_lang2, use_cuda, "test1")
-#
-# evaluateAndShowAttention("11 t4 t3",encoder1,attn_decoder1,master_data_te, input_lang2, output_lang2, use_cuda, "test1")
-# evaluateAndShowAttention("11 t2 t3",encoder1,attn_decoder1,master_data_te, input_lang2, output_lang2, use_cuda, "test1")
-# evaluateAndShowAttention("01 t4 t2",encoder1,attn_decoder1,master_data_te, input_lang2, output_lang2, use_cuda, "test1")
-# evaluateAndShowAttention("01 t3 t1",encoder1,attn_decoder1,master_data_te, input_lang2, output_lang2, use_cuda, "test1")
-#
-# evaluateAndShowAttention("11 t1 t1",encoder1,attn_decoder1,master_data_te, input_lang2, output_lang2, use_cuda, "test1")
-# evaluateAndShowAttention("00 t2 t2",encoder1,attn_decoder1,master_data_te, input_lang2, output_lang2, use_cuda, "test1")
+evaluateAndShowAttention("00 t1 t2",encoder1,attn_decoder1,master_data_te, input_lang2, output_lang2, use_cuda, "test1")
+evaluateAndShowAttention("11 t2 t3",encoder1,attn_decoder1,master_data_te, input_lang2, output_lang2, use_cuda, "test2")
+
+evaluateAndShowAttention("01 t3 t1",encoder1,attn_decoder1,master_data_te, input_lang2, output_lang2, use_cuda, "test3")
+evaluateAndShowAttention("10 t3 t4",encoder1,attn_decoder1,master_data_te, input_lang2, output_lang2, use_cuda, "test4")
+
