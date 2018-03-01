@@ -8,6 +8,7 @@ from Seq2Seq_Attn.reversed_input.checkpoint import checkpoint
 
 import time
 import math
+from random import shuffle
 
 
 def asMinutes(s):
@@ -63,6 +64,7 @@ def trainIters(encoder, decoder, n_iters, training_pairs, test_pairs, use_cuda=F
         tl1,tl2 = 0, 0
         temp_acc = 0
         test_l, test_a = 0, 0
+        shuffle(training_pairs)
         for j in range(len(training_pairs)):
             training_pair = training_pairs[j]
             input_variable = training_pair[0]
@@ -123,7 +125,8 @@ def trainIters(encoder, decoder, n_iters, training_pairs, test_pairs, use_cuda=F
             saver_e.save(print_test_a_avg,best_acc,iter+1)
             saver_d.save(print_test_a_avg, best_acc, iter + 1)
 
-            best_acc = print_test_a_avg
+            if(print_test_a_avg > best_acc):
+                best_acc = print_test_a_avg
 
         if iter % plot_every == 0:
             plot_loss_avg = plot_loss_total / plot_every

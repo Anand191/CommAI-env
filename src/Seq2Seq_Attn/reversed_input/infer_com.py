@@ -69,8 +69,8 @@ def inferIters(encoder, decoder, infer_pairs, use_cuda=False):
         loss_t, acc_t, _ = inference(encoder,decoder,input_var,target_var,criterion2, use_cuda)
         test_l += loss_t
         test_a += acc_t
-    print_acc_total += (test_a/len(infer_pairs))
+    print_acc_total = (test_a/len(infer_pairs))
 
-    print_loss_total += (test_l/len(infer_pairs))
+    print_loss_total = (test_l/len(infer_pairs))
 
     return(print_loss_total,print_acc_total)

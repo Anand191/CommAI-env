@@ -7,7 +7,7 @@ import dill
 class checkpoint(object):
     MODEL_NAME = 'model.pt'
     TRAINER_STATE_NAME = 'trainer_states.pt'
-    
+
     def __init__(self,model,path=None):
         self.model = model
         self.path = path

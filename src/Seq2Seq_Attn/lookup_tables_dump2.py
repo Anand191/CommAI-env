@@ -40,21 +40,22 @@ def composed():
                     tasks.FuncLookupTestTaskR2D3_1(), tasks.FuncLookupTestTaskR2D3_2(), tasks.FuncLookupTestTaskR2D3_4(),
                     tasks.FuncLookupTestTaskR2D4_1(), tasks.FuncLookupTestTaskR2D4_2(), tasks.FuncLookupTestTaskR2D4_3(),
                    tasks.FuncLookupTestTaskR2D4_4(),tasks.FuncLookupTestTaskR2D3_3(),tasks.FuncLookupTestTaskR2D2_2(),
-                   tasks.FuncLookupTestTaskR2D1_1(), tasks.FuncLookupTestTaskR2D5_5(), tasks.FuncLookupTestTaskR2D5_6(),
-                   tasks.FuncLookupTestTaskR2D6_6(), tasks.FuncLookupTestTaskR2D6_5(), tasks.FuncLookupTaskR2D5_5(),
-                   tasks.FuncLookupTaskR2D5_6(), tasks.FuncLookupTaskR2D6_6(), tasks.FuncLookupTaskR2D6_5()]
+                   tasks.FuncLookupTestTaskR2D1_1()]
 
-    infer_tables = [tasks.FuncLookupTaskR2D4_2_3(), tasks.FuncLookupTestTaskR2D4_2_3(), tasks.FuncLookupTaskR2D1_2_3(),
-                    tasks.FuncLookupTestTaskR2D1_2_3(),tasks.FuncLookupTaskR2D1_3_4(),tasks.FuncLookupTestTaskR2D1_3_4(),
-                    tasks.FuncLookupTestTaskR2D4_5_6(), tasks.FuncLookupTestTaskR2D2_6_5(), tasks.FuncLookupTaskR2D1_2_4(),
-                    tasks.FuncLookupTestTaskR2D1_2_4(),tasks.FuncLookupTaskR2D3_2_4(),tasks.FuncLookupTestTaskR2D3_2_4(),
-                    tasks.FuncLookupTaskR2D2_3_5(),tasks.FuncLookupTestTaskR2D2_3_5()]
+    infer_tables = [tasks.FuncLookupTestTaskR2D5_5(), tasks.FuncLookupTestTaskR2D5_6(),
+                   tasks.FuncLookupTestTaskR2D6_6(), tasks.FuncLookupTestTaskR2D6_5(), tasks.FuncLookupTaskR2D5_5(),
+                   tasks.FuncLookupTaskR2D5_6(), tasks.FuncLookupTaskR2D6_6(), tasks.FuncLookupTaskR2D6_5(),
+                   tasks.FuncLookupTaskR2D4_2_3(), tasks.FuncLookupTestTaskR2D4_2_3(), tasks.FuncLookupTaskR2D1_2_3(),
+                   tasks.FuncLookupTestTaskR2D1_2_3(),tasks.FuncLookupTaskR2D1_3_4(),tasks.FuncLookupTestTaskR2D1_3_4(),
+                   tasks.FuncLookupTestTaskR2D4_5_6(), tasks.FuncLookupTestTaskR2D2_6_5(), tasks.FuncLookupTaskR2D1_2_4(),
+                   tasks.FuncLookupTestTaskR2D1_2_4(),tasks.FuncLookupTaskR2D3_2_4(),tasks.FuncLookupTestTaskR2D3_2_4(),
+                   tasks.FuncLookupTaskR2D2_3_5(),tasks.FuncLookupTestTaskR2D2_3_5()]
 
     comp_seq = [(1,2), (1,3), (1,4), (2,1), (2,3), (2,4), (3,1), (3,2), (3,4), (4,1), (4,2), (4,3)]
     comp_seq_t = [(1, 2), (1, 3), (1, 4), (2, 1), (2, 3), (2, 4), (3, 1), (3, 2), (3, 4), (4, 1), (4, 2), (4, 3),
-                  (4, 4),(3, 3),(2, 2),(1, 1) , (5, 5), (5, 6), (6, 6), (6, 5),(5,5),(5,6),(6,6),(6,5)]
-    comp_seq_i = [(4,2,3),(4,2,3),(1,2,3),(1,2,3),(1,3,4),(1,3,4),(4,5,6),(2,6,5),(1,2,4),(1,2,4),(3,2,4),(3,2,4),
-                  (2,3,5),(2,3,5)]
+                  (4, 4),(3, 3),(2, 2),(1, 1)]
+    comp_seq_i = [(5, 5), (5, 6), (6, 6), (6, 5),(5,5),(5,6),(6,6),(6,5), (4,2,3),(4,2,3),(1,2,3),(1,2,3),(1,3,4),
+                  (1,3,4),(4,5,6),(2,6,5),(1,2,4),(1,2,4),(3,2,4),(3,2,4),(2,3,5),(2,3,5)]
 
     composed_train, composed_test, composed_infer = {}, {}, {}
 
