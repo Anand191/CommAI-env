@@ -90,10 +90,10 @@ class BahdanauAttnDecoderRNN(nn.Module):
 
         # Define layers
         self.embedding = nn.Embedding(output_size, hidden_size)
-        self.dropout = nn.Dropout(dropout_p)
+        self.dropout = nn.Dropout(self.dropout_p)
         self.attn = Attn(attn_model, hidden_size, self.use_cuda)
-        self.gru = nn.GRU(hidden_size * 2, hidden_size, n_layers, dropout=dropout_p)
-        self.out = nn.Linear(hidden_size * 2, output_size)
+        self.gru = nn.GRU(hidden_size * 2, hidden_size, n_layers, dropout=self.dropout_p)
+        self.out = nn.Linear(hidden_size, output_size)
 
     def forward(self, word_input, last_hidden, encoder_outputs):
         # Note that we will only be running forward for a single decoder time step, but will use all encoder outputs
@@ -113,8 +113,11 @@ class BahdanauAttnDecoderRNN(nn.Module):
         # Final output layer
         output = output.squeeze(0)  # B x N
         context = context.squeeze(1) #B x N
-        torch.cat((output,context),1).size()
-        output = F.log_softmax(self.out(torch.cat((output, context), 1)),dim=1)
+        #torch.cat((output,context),1).size()
+        #output = F.log_softmax(self.out(torch.cat((output, context), 1)),dim=1)
+        output = F.log_softmax(self.out(output), dim=1)
 
         # Return final output, hidden state, and attention weights (for visualization)
         return output, hidden, attn_weights
+
+
