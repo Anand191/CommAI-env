@@ -41,12 +41,12 @@ def inference(encoder, decoder, input_variable, target_variable,criterion2, use_
 
         decoder_input = Variable(torch.LongTensor([[ni]]))
         decoder_input = decoder_input.cuda() if use_cuda else decoder_input
-    loss += criterion2(decoder_output, target_variable[-2])
+    loss += criterion2(decoder_output, target_variable[1])
     tv, ti = decoder_output.data.topk(1)
     do = ti[0][0]
     chk = Variable(torch.LongTensor([do]))
     chk = chk.cuda() if use_cuda else chk
-    if (chk.data[0] == target_variable[-2].data[0]):
+    if (chk.data[0] == target_variable[1].data[0]):
         acc = 1
     else:
         acc = 0

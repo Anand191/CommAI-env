@@ -85,7 +85,7 @@ def trainIters(encoder, decoder, n_iters, training_pairs, test_pairs, use_cuda=F
         avg_l1 += (tl1/len(training_pairs))
         avg_l2 += (tl2 / len(training_pairs))
 
-        shuffle(test_pairs)
+        #shuffle(test_pairs)
         for j in range(len(test_pairs)):
             test_pair = test_pairs[j]
             input_var = test_pair[0]
@@ -116,18 +116,22 @@ def trainIters(encoder, decoder, n_iters, training_pairs, test_pairs, use_cuda=F
             print_test_loss = 0
             avg_l1,avg_l2 = 0,0
 
-            print('%s %s (%d %d%%) %.4f %.4f %.4f %.4f' % ("Train",timeSince(start, iter / n_iters),
-                                         iter, iter / n_iters * 100, print_loss_avg,avg_l1_avg,avg_l2_avg, print_acc_avg))
+            print('%s %s (%d %d%%) %s: %.4f %s: %.4f %s: %.4f %s: %.4f' % ("Train",timeSince(start, iter / n_iters),
+                                         iter, iter / n_iters * 100, "Average Total Loss", print_loss_avg,
+                                                                           "Average NLL Loss",avg_l1_avg,
+                                                                           "Attention Loss", avg_l2_avg,
+                                                                           "Final Target Accuracy", print_acc_avg))
             print('')
-            print('%s %s (%d %d%%) %.4f %.4f' % ("Test", timeSince(start, iter / n_iters),
-                                                           iter, iter / n_iters * 100, print_test_l_avg,print_test_a_avg ))
+            print('%s %s (%d %d%%) %s: %.4f %s: %.4f' % ("Test", timeSince(start, iter / n_iters),
+                                                           iter, iter / n_iters * 100, "Average Total Loss",
+                                                         print_test_l_avg,"Final Target Accuracy", print_test_a_avg ))
             print('')
 
-            saver_e.save(print_test_a_avg,best_acc,iter+1)
-            saver_d.save(print_test_a_avg, best_acc, iter + 1)
-
-            if(print_test_a_avg > best_acc):
-                best_acc = print_test_a_avg
+            # saver_e.save(print_test_a_avg,best_acc,iter+1)
+            # saver_d.save(print_test_a_avg, best_acc, iter + 1)
+            #
+            # if(print_test_a_avg > best_acc):
+            #     best_acc = print_test_a_avg
 
         if iter % plot_every == 0:
             plot_loss_avg = plot_loss_total / plot_every
@@ -145,28 +149,30 @@ def trainIters(encoder, decoder, n_iters, training_pairs, test_pairs, use_cuda=F
             plot_test_loss = 0
             plot_test_acc = 0
 
-    showPlot(plot_losses)
-    showAcc(plot_accuracy)
-    showPlot(plot_tloss)
-    showAcc(plot_tacc)
+    showPlot(plot_losses,'train_loss')
+    showAcc(plot_accuracy,'train_acc')
+    showPlot(plot_tloss,'valid_loss')
+    showAcc(plot_tacc,'valid_acc')
     return (print_test_a_avg)
 
 
-def showPlot(points):
+def showPlot(points, name):
     plt.figure()
     fig, ax = plt.subplots()
     # this locator puts ticks at regular intervals
     loc = ticker.MultipleLocator(base=0.2)
     ax.yaxis.set_major_locator(loc)
     plt.plot(points)
+    #plt.savefig('{}.png'.format(name))
     plt.show()
 
-def showAcc(points):
+def showAcc(points, name):
     plt.figure()
     fig, ax = plt.subplots()
     # this locator puts ticks at regular intervals
     loc = ticker.MultipleLocator(base=0.2)
     ax.yaxis.set_major_locator(loc)
     plt.plot(points)
+    #plt.savefig('{}.png'.format(name))
     plt.show()
 

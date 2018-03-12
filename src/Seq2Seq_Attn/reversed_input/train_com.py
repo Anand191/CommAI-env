@@ -9,6 +9,8 @@ def train(input_variable, target_variable, encoder, decoder, encoder_optimizer, 
     encoder_optimizer.zero_grad()
     decoder_optimizer.zero_grad()
 
+    decoder.train()
+
     input_length = input_variable.size()[0]
     target_length = target_variable.size()[0]
 
@@ -54,7 +56,7 @@ def train(input_variable, target_variable, encoder, decoder, encoder_optimizer, 
             if ni == EOS_token:
                 break
             i += 1
-        loss += criterion2(decoder_output, target_variable[-2])
+        loss += criterion2(decoder_output, target_variable[1])
         l1 = loss.data[0]
         l2 = loss1.data[0]
         loss += loss1
@@ -63,7 +65,7 @@ def train(input_variable, target_variable, encoder, decoder, encoder_optimizer, 
         do = ti[0][0]
         chk = Variable(torch.LongTensor([do]))
         chk = chk.cuda() if use_cuda else chk
-        if(chk.data[0] == target_variable[-2].data[0]):
+        if(chk.data[0] == target_variable[1].data[0]):
             acc = 1
         else:
             acc = 0

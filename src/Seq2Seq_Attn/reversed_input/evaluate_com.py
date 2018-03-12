@@ -12,6 +12,8 @@ def evaluate(encoder, decoder, sentence, input_lang, output_lang, use_cuda=False
     input_variable = variableFromSentence(input_lang, sentence)
     input_length = input_variable.size()[0]
 
+    decoder.eval()
+
     encoder_hidden = encoder.initHidden()
     encoder_outputs, encoder_hidden = encoder(input_variable, encoder_hidden)
     # encoder_outputs = Variable(torch.zeros(max_length, encoder.hidden_size))
@@ -90,7 +92,8 @@ def showAttention(input_sentence, output_words, attentions,name,colour):
     ax.xaxis.set_label_position('top')
 
     plt.savefig("{}.png".format(name))
-    plt.show()
+    plt.close(fig)
+    #plt.show()
 
 
 def evaluateAndShowAttention(input_sentence,encoder1,attn_decoder1, master_data, input_lang, output_lang, use_cuda,name):
@@ -116,7 +119,7 @@ def evaluateAndShowAttention(input_sentence,encoder1,attn_decoder1, master_data,
         i+=1
     row_t = np.where(master_data[:,0]==input_sentence)[0]
     target = master_data[row_t,1]
-    print('input =', input_sentence)
-    print('target =', target)
-    print('output =', ' '.join(output_words))
+    # print('input =', input_sentence)
+    # print('target =', target)
+    # print('output =', ' '.join(output_words))
     showAttention(input_sentence, output_words, attentions,name,colour)
