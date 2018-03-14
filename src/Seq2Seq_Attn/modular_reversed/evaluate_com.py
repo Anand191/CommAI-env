@@ -3,7 +3,7 @@ import matplotlib.ticker as ticker
 import matplotlib as mpl
 import torch
 from torch.autograd import Variable
-from Seq2Seq_Attn.modular_reversed.data_com_new import SOS_token, MAX_LENGTH, EOS_token
+from Seq2Seq_Attn.modular_reversed.data_com_new import SOS_token, MAX_LENGTH
 import numpy as np
 import random
 
@@ -11,10 +11,11 @@ def evaluate(encoder, decoder, sentence, input_lang, output_lang, variableFromSe
     input_variable = variableFromSentence(input_lang, sentence)
     input_length = input_variable.size()[0]
 
+    encoder.eval()
     decoder.eval()
 
     encoder_hidden = encoder.initHidden()
-    encoder_outputs, encoder_hidden = encoder(input_variable, encoder_hidden)
+    encoder_outputs, encoder_hidden = encoder(input_variable.transpose(0,1), encoder_hidden)
     # encoder_outputs = Variable(torch.zeros(max_length, encoder.hidden_size))
     # encoder_outputs = encoder_outputs.cuda() if use_cuda else encoder_outputs
 
@@ -38,11 +39,11 @@ def evaluate(encoder, decoder, sentence, input_lang, output_lang, variableFromSe
         decoder_attentions[di,:decoder_attention.size(2)] = decoder_attention.squeeze(0).squeeze(0).cpu().data
         topv, topi = decoder_output.data.topk(1)
         ni = topi[0][0]
-        if ni == EOS_token:
-            decoded_words.append('<EOS>')
-            break
-        else:
-            decoded_words.append(output_lang.index2word[ni])
+        # if ni == EOS_token:
+        #     decoded_words.append('<EOS>')
+        #     break
+        # else:
+        decoded_words.append(output_lang.index2word[ni])
 
         decoder_input = Variable(torch.LongTensor([[ni]]))
         decoder_input = decoder_input.cuda() if use_cuda else decoder_input
