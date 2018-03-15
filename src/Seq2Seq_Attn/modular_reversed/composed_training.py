@@ -26,7 +26,7 @@ def timeSince(since, percent):
 
 
 def trainIters(encoder, decoder, n_iters, training_pairs, test_pairs, use_cuda=False, print_every=1, plot_every=5,
-               learning_rate=0.01, use_copy=True, use_attn=True, use_interim=False):
+               learning_rate=0.01, use_copy=True, use_attn=True, use_interim=False, clip=0.25):
     start = time.time()
 
     wc_train = 0
@@ -85,7 +85,7 @@ def trainIters(encoder, decoder, n_iters, training_pairs, test_pairs, use_cuda=F
 
             loss,other,acc = train(input_variable, target_variable, encoder,decoder, encoder_optimizer,
                                    decoder_optimizer, criterion2, use_cuda, use_copy = use_copy, use_attn = use_attn,
-                                   use_interim = use_interim
+                                   use_interim = use_interim, clip=clip, lr=learning_rate
                                    )
             temp_loss += loss
             l0 += other['final_target_loss']

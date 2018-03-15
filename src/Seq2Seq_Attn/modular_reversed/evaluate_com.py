@@ -7,7 +7,7 @@ from Seq2Seq_Attn.modular_reversed.data_com_new import SOS_token, MAX_LENGTH
 import numpy as np
 import random
 
-def evaluate(encoder, decoder, sentence, input_lang, output_lang, variableFromSentence, use_cuda=False, max_length=MAX_LENGTH):
+def evaluate(encoder, decoder, sentence, input_lang, output_lang, variableFromSentence,use_cuda=False,max_length=MAX_LENGTH):
     input_variable = variableFromSentence(input_lang, sentence)
     input_length = input_variable.size()[0]
 
@@ -16,13 +16,6 @@ def evaluate(encoder, decoder, sentence, input_lang, output_lang, variableFromSe
 
     encoder_hidden = encoder.initHidden()
     encoder_outputs, encoder_hidden = encoder(input_variable.transpose(0,1), encoder_hidden)
-    # encoder_outputs = Variable(torch.zeros(max_length, encoder.hidden_size))
-    # encoder_outputs = encoder_outputs.cuda() if use_cuda else encoder_outputs
-
-    # for ei in range(R):
-    #     encoder_output, encoder_hidden = encoder(input_variable[ei],
-    #                                              encoder_hidden)
-    #     encoder_outputs[ei] = encoder_outputs[ei] + encoder_output[0][0]
 
     decoder_input = Variable(torch.LongTensor([[SOS_token]]))  # SOS
     decoder_input = decoder_input.cuda() if use_cuda else decoder_input
@@ -32,17 +25,15 @@ def evaluate(encoder, decoder, sentence, input_lang, output_lang, variableFromSe
     decoded_words = []
     decoder_attentions = torch.zeros(max_length, max_length)
 
-    for di in range(input_length-1):
+    ponder_step = input_length-1
+    for di in range(ponder_step):
         decoder_output, decoder_hidden, decoder_attention = decoder(
             decoder_input, decoder_hidden, encoder_outputs)
-        #print(decoder_attention.squeeze(0))
+
         decoder_attentions[di,:decoder_attention.size(2)] = decoder_attention.squeeze(0).squeeze(0).cpu().data
         topv, topi = decoder_output.data.topk(1)
         ni = topi[0][0]
-        # if ni == EOS_token:
-        #     decoded_words.append('<EOS>')
-        #     break
-        # else:
+
         decoded_words.append(output_lang.index2word[ni])
 
         decoder_input = Variable(torch.LongTensor([[ni]]))

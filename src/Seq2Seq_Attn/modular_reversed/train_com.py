@@ -7,7 +7,7 @@ from Seq2Seq_Attn.modular_reversed.data_com_new import SOS_token,MAX_LENGTH
 
 
 def train(input_variable, target_variable, encoder, decoder, encoder_optimizer, decoder_optimizer, criterion2,
-          use_cuda= False, max_length=MAX_LENGTH, use_copy=True, use_attn=True, use_interim=False):
+          use_cuda= False, max_length=MAX_LENGTH, use_copy=True, use_attn=True, use_interim=False, clip=0.25, lr=0.001):
 
     encoder_optimizer.zero_grad()
     decoder_optimizer.zero_grad()
@@ -88,7 +88,16 @@ def train(input_variable, target_variable, encoder, decoder, encoder_optimizer, 
     accuracies['final_target'] = metrics.final_target(final_outputs, target_outputs)
 
     target_loss.backward()
-
+########################################################################################################################
+    #gradient clipping
+    # torch.nn.utils.clip_grad_norm(encoder.parameters(), clip)
+    # for p in encoder.parameters():
+    #     p.data.add_(-lr, p.grad.data)
+    #
+    # torch.nn.utils.clip_grad_norm(decoder.parameters(), clip)
+    # for p in decoder.parameters():
+    #     p.data.add_(-lr, p.grad.data)
+########################################################################################################################
     encoder_optimizer.step()
     decoder_optimizer.step()
 
