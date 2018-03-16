@@ -8,7 +8,7 @@ SOS_token = 0
 EOS_token = 1
 MAX_LENGTH = 6
 
-fnames = ['train.csv','test.csv', 'infer.csv']
+fnames = ['train.csv','validation.csv', 'heldout.csv', 'unseen.csv', 'longer.csv']
 
 class Lang:
     def __init__(self, name):
@@ -71,14 +71,18 @@ class DataPrep(object):
     def language_pairs(self):
         self.input_lang, self.output_lang, self.pairs_tr = self.prepareData('task_tr', 'out_tr',self.master_data[0])
         _, _, self.pairs_te = self.prepareData('task_te', 'out_te',self.master_data[1])
-        _, _, self.pairs_if = self.prepareData('task_if', 'out_if',self.master_data[2])
+        _, _, self.pairs_if1 = self.prepareData('task_if1', 'out_if1',self.master_data[2])
+        _, _, self.pairs_if2 = self.prepareData('task_if2', 'out_if2', self.master_data[3])
+        _, _, self.pairs_if3 = self.prepareData('task_if3', 'out_if3', self.master_data[4])
 
         # input_lang_te, output_lang_te = input_lang_tr, output_lang_tr
         # input_lang_if, output_lang_if = input_lang_tr, output_lang_tr
 
         print(random.choice(self.pairs_tr))
         print(random.choice(self.pairs_te))
-        print(random.choice(self.pairs_if))
+        print(random.choice(self.pairs_if1))
+        print(random.choice(self.pairs_if2))
+        print(random.choice(self.pairs_if3))
 
 
     def indexesFromSentence(self,lang, sentence):
@@ -102,4 +106,6 @@ class DataPrep(object):
     def data_pairs(self):
         self.training_pairs = [self.variablesFromPair(self.input_lang, self.output_lang, pair) for pair in self.pairs_tr]
         self.test_pairs = [self.variablesFromPair(self.input_lang, self.output_lang, pair) for pair in self.pairs_te]
-        self.infer_pairs = [self.variablesFromPair(self.input_lang, self.output_lang, pair) for pair in self.pairs_if]
+        self.infer_pairs1 = [self.variablesFromPair(self.input_lang, self.output_lang, pair) for pair in self.pairs_if1]
+        self.infer_pairs2 = [self.variablesFromPair(self.input_lang, self.output_lang, pair) for pair in self.pairs_if2]
+        self.infer_pairs3 = [self.variablesFromPair(self.input_lang, self.output_lang, pair) for pair in self.pairs_if3]

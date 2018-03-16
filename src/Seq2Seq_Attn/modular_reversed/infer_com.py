@@ -81,7 +81,7 @@ def inference(encoder, decoder, input_variable, target_variable,criterion2, use_
 
 
 
-def inferIters(encoder, decoder, infer_pairs, use_cuda=False, use_copy=True, use_attn=True, use_interim=False):
+def inferIters(encoder, decoder, infer_pairs, use_cuda=False, use_copy=True, use_attn=True, use_interim=False, name='Test'):
     wc_infer = 0
     for tr in infer_pairs:
         wc_infer += (tr[1].size()[0] -1)
@@ -124,7 +124,7 @@ def inferIters(encoder, decoder, infer_pairs, use_cuda=False, use_copy=True, use
 
     print('')
     print('%s %s: %.4f %s: %.4f %s: %.4f %s: %.4f %s:%.4f'
-          % ("Test",
+          % (name,
              "Average Total Loss", print_loss_total,
              "Average Final Target Loss", target_inf,
              "Average Copy Loss", copy_inf,
@@ -132,7 +132,7 @@ def inferIters(encoder, decoder, infer_pairs, use_cuda=False, use_copy=True, use
              "Average Intermediate Loss", interim_inf
              ))
     print('')
-    print('%s %s:%.4f %s:%.4f %s:%.4f' % ("Test",
+    print('%s %s:%.4f %s:%.4f %s:%.4f' % (name,
                                           "Word Level Accuracy", word_inf,
                                           "Sequence Level Accuracy", seq_inf,
                                           "Final Target Accuracy", print_acc_total
