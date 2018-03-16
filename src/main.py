@@ -1,4 +1,5 @@
 import os
+import random
 import argparse
 import torch
 import numpy as np
@@ -47,13 +48,14 @@ class GetData(object):
         preprocess.data_pairs()
 
         return (preprocess.input_lang, preprocess.output_lang, preprocess.training_pairs, preprocess.test_pairs,
-                preprocess.infer_pairs, preprocess.master_data,preprocess.variableFromSentence)
+                preprocess.infer_pairs1,preprocess.infer_pairs2, preprocess.infer_pairs3,
+                preprocess.master_data,preprocess.variableFromSentence)
 
 
 test_accs = np.zeros((5, 2))
 
 preprocessing = GetData(opt.data)
-input_lang,output_lang,training_pairs,test_pairs,infer_pairs, master_data, vfs = preprocessing.data_prep()
+input_lang,output_lang,training_pairs,test_pairs,infer_pairs1, infer_pairs2, infer_pairs3, master_data, vfs = preprocessing.data_prep()
 
 for i in range(1):
     print("*****Starting run {} with {} Epochs*****".format(i,opt.epochs))
@@ -73,9 +75,14 @@ for i in range(1):
     test_accs[i, 1] = test_acc
 
 print('*********End Training, Begin Inference*********')
-inferIters(encoder1, attn_decoder1, infer_pairs, use_cuda, opt.use_copy, opt.use_attn, opt.use_interim)
+inferIters(encoder1, attn_decoder1, infer_pairs1, use_cuda, opt.use_copy, opt.use_attn, opt.use_interim, "heldout")
+inferIters(encoder1, attn_decoder1, infer_pairs2, use_cuda, opt.use_copy, opt.use_attn, opt.use_interim, "unseen")
+inferIters(encoder1, attn_decoder1, infer_pairs3, use_cuda, opt.use_copy, opt.use_attn, opt.use_interim, "longer")
 
-# data_name = ['train', 'test', 'infer']
+########################################################################################################################
+# print('*********Begin Plotting*********')
+#
+# data_name = ['train', 'validation', 'heldout', 'unseen', 'longer']
 #
 # for step, data in enumerate(master_data):
 #     for i in range(0, data.shape[0]):
@@ -83,6 +90,8 @@ inferIters(encoder1, attn_decoder1, infer_pairs, use_cuda, opt.use_copy, opt.use
 #         if (len(ipt_sentence.split(' ')) == 2 and data_name[step] != "train"):
 #             continue
 #         else:
+#             if(data_name[step] == 'longer' and i==60):
+#                 break
 #             name = os.path.join(opt.infer, data_name[step],'{}{}'.format(data_name[step], i))
 #             evaluateAndShowAttention(ipt_sentence, encoder1, attn_decoder1, master_data[0], input_lang, output_lang,
 #                                      use_cuda,vfs, name)
