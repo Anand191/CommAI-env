@@ -1,0 +1,486 @@
+\n\n Training For Hardcoded Attention: Final + Copy
+Using Cuda : True
+Namespace(clip=5.0, data='Seq2Seq_Attn/batchified/data', decoder_weights='Seq2Seq_Attn/batchified/Decoder', dropout_p_decoder=0.1, dropout_p_encoder=0.1, embedding_size=300, encoder_weights='Seq2Seq_Attn/batchified/Encoder', epochs=500, hidden_size=300, infer='Seq2Seq_Attn/batchified/Infer_Results', lr=0.01, n_layers=1, plot_every=10, print_every=20, test_every=100, train_attn=False, use_attn=False, use_copy=True, use_interim=False)
+Reading lines...
+Read 215 sentence pairs
+Trimmed to 215 sentence pairs
+Counting words...
+Counted words:
+task_tr 18
+out_tr 10
+Reading lines...
+Read 17 sentence pairs
+Trimmed to 17 sentence pairs
+Counting words...
+Counted words:
+task 16
+out 10
+Reading lines...
+Read 56 sentence pairs
+Trimmed to 56 sentence pairs
+Counting words...
+Counted words:
+task 16
+out 10
+Reading lines...
+Read 64 sentence pairs
+Trimmed to 64 sentence pairs
+Counting words...
+Counted words:
+task 16
+out 10
+Reading lines...
+Read 192 sentence pairs
+Trimmed to 192 sentence pairs
+Counting words...
+Counted words:
+task 18
+out 10
+Reading lines...
+Read 32 sentence pairs
+Trimmed to 32 sentence pairs
+Counting words...
+Counted words:
+task 12
+out 10
+Reading lines...
+Read 4096 sentence pairs
+Trimmed to 4096 sentence pairs
+Counting words...
+Counted words:
+task 18
+out 10
+['011 t6', '011 111']
+['001 t3 t4', '001 101 001']
+['011 t1 t2', '011 010 010']
+['000 t3 t2', '000 111 100']
+['000 t7 t5', '000 011 100']
+['011 t8 t8', '011 000 010']
+['101 t3 t8 t7', '101 000 010 000']
+*****Starting run 0 with 500 Epochs*****
+Train 1m 36s (- 38m 41s) (20 4%) Average Final Target Loss: 0.5468 Average Copy Loss: 0.0585 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+Train 1m 36s (- 38m 41s) (20 4%) Word Level Accuracy:0.6787 Sequence Level Accuracy:0.4195 Final Target Accuracy:0.4791
+
+Validation 1m 36s (- 38m 41s) (20 4%) Average Final Target Loss: 0.6869 Average Copy Loss: 0.0312 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+Validation 1m 36s (- 38m 41s) (20 4%) Word Level Accuracy:0.6245 Sequence Level Accuracy:0.2588 Final Target Accuracy:0.2824
+************************************************************************************************************
+
+=> Saving a new best
+=> Saving a new best
+Train 3m 14s (- 37m 20s) (40 8%) Average Final Target Loss: 0.0098 Average Copy Loss: 0.0003 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+Train 3m 14s (- 37m 20s) (40 8%) Word Level Accuracy:1.0000 Sequence Level Accuracy:1.0000 Final Target Accuracy:1.0000
+
+Validation 3m 14s (- 37m 20s) (40 8%) Average Final Target Loss: 0.1062 Average Copy Loss: 0.0002 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+Validation 3m 14s (- 37m 20s) (40 8%) Word Level Accuracy:0.9794 Sequence Level Accuracy:0.9382 Final Target Accuracy:0.9382
+************************************************************************************************************
+
+=> Saving a new best
+=> Saving a new best
+Train 5m 1s (- 36m 50s) (60 12%) Average Final Target Loss: 0.0027 Average Copy Loss: 0.0001 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+Train 5m 1s (- 36m 50s) (60 12%) Word Level Accuracy:1.0000 Sequence Level Accuracy:1.0000 Final Target Accuracy:1.0000
+
+Validation 5m 1s (- 36m 50s) (60 12%) Average Final Target Loss: 0.0569 Average Copy Loss: 0.0001 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+Validation 5m 1s (- 36m 50s) (60 12%) Word Level Accuracy:0.9980 Sequence Level Accuracy:0.9941 Final Target Accuracy:0.9941
+************************************************************************************************************
+
+=> Saving a new best
+=> Saving a new best
+Train 6m 59s (- 36m 44s) (80 16%) Average Final Target Loss: 0.0015 Average Copy Loss: 0.0001 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+Train 6m 59s (- 36m 44s) (80 16%) Word Level Accuracy:1.0000 Sequence Level Accuracy:1.0000 Final Target Accuracy:1.0000
+
+Validation 6m 59s (- 36m 44s) (80 16%) Average Final Target Loss: 0.0416 Average Copy Loss: 0.0000 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+Validation 6m 59s (- 36m 44s) (80 16%) Word Level Accuracy:1.0000 Sequence Level Accuracy:1.0000 Final Target Accuracy:1.0000
+************************************************************************************************************
+
+=> Saving a new best
+=> Saving a new best
+Train 8m 35s (- 34m 20s) (100 20%) Average Final Target Loss: 0.0010 Average Copy Loss: 0.0000 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+Train 8m 35s (- 34m 20s) (100 20%) Word Level Accuracy:1.0000 Sequence Level Accuracy:1.0000 Final Target Accuracy:1.0000
+
+Validation 8m 35s (- 34m 20s) (100 20%) Average Final Target Loss: 0.0335 Average Copy Loss: 0.0000 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+Validation 8m 35s (- 34m 20s) (100 20%) Word Level Accuracy:1.0000 Sequence Level Accuracy:1.0000 Final Target Accuracy:1.0000
+************************************************************************************************************
+
+=> Saving a new best
+=> Saving a new best
+-------------------Results on Test Sets----------------------------------------------------
+
+test1_heldout.csv  Average Final Target Loss: 0.0704 Average Copy Loss: 0.0000 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+test1_heldout.csv Word Level Accuracy:0.9881 Sequence Level Accuracy:0.9643 Final Target Accuracy:0.9643
+************************************************************************************************************
+
+test2_subset.csv  Average Final Target Loss: 0.0382 Average Copy Loss: 0.0000 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+test2_subset.csv Word Level Accuracy:0.9896 Sequence Level Accuracy:0.9688 Final Target Accuracy:0.9688
+************************************************************************************************************
+
+test3_hybrid.csv  Average Final Target Loss: 0.2576 Average Copy Loss: 0.0000 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+test3_hybrid.csv Word Level Accuracy:0.9062 Sequence Level Accuracy:0.7188 Final Target Accuracy:0.7188
+************************************************************************************************************
+
+test4_unseen.csv  Average Final Target Loss: 0.1313 Average Copy Loss: 0.0000 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+test4_unseen.csv Word Level Accuracy:0.9688 Sequence Level Accuracy:0.9062 Final Target Accuracy:0.9062
+************************************************************************************************************
+
+test5_longer.csv  Average Final Target Loss: 0.3109 Average Copy Loss: 0.0000 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+test5_longer.csv Word Level Accuracy:0.9048 Sequence Level Accuracy:0.7495 Final Target Accuracy:0.7512
+************************************************************************************************************
+Train 11m 14s (- 35m 37s) (120 24%) Average Final Target Loss: 0.0008 Average Copy Loss: 0.0000 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+Train 11m 14s (- 35m 37s) (120 24%) Word Level Accuracy:1.0000 Sequence Level Accuracy:1.0000 Final Target Accuracy:1.0000
+
+Validation 11m 14s (- 35m 37s) (120 24%) Average Final Target Loss: 0.0283 Average Copy Loss: 0.0000 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+Validation 11m 14s (- 35m 37s) (120 24%) Word Level Accuracy:1.0000 Sequence Level Accuracy:1.0000 Final Target Accuracy:1.0000
+************************************************************************************************************
+
+=> Saving a new best
+=> Saving a new best
+Train 13m 1s (- 33m 28s) (140 28%) Average Final Target Loss: 0.0006 Average Copy Loss: 0.0000 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+Train 13m 1s (- 33m 28s) (140 28%) Word Level Accuracy:1.0000 Sequence Level Accuracy:1.0000 Final Target Accuracy:1.0000
+
+Validation 13m 1s (- 33m 28s) (140 28%) Average Final Target Loss: 0.0247 Average Copy Loss: 0.0000 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+Validation 13m 1s (- 33m 28s) (140 28%) Word Level Accuracy:1.0000 Sequence Level Accuracy:1.0000 Final Target Accuracy:1.0000
+************************************************************************************************************
+
+=> Saving a new best
+=> Saving a new best
+Train 14m 57s (- 31m 46s) (160 32%) Average Final Target Loss: 0.0005 Average Copy Loss: 0.0000 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+Train 14m 57s (- 31m 46s) (160 32%) Word Level Accuracy:1.0000 Sequence Level Accuracy:1.0000 Final Target Accuracy:1.0000
+
+Validation 14m 57s (- 31m 46s) (160 32%) Average Final Target Loss: 0.0221 Average Copy Loss: 0.0000 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+Validation 14m 57s (- 31m 46s) (160 32%) Word Level Accuracy:1.0000 Sequence Level Accuracy:1.0000 Final Target Accuracy:1.0000
+************************************************************************************************************
+
+=> Saving a new best
+=> Saving a new best
+Train 16m 38s (- 29m 35s) (180 36%) Average Final Target Loss: 0.0005 Average Copy Loss: 0.0000 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+Train 16m 38s (- 29m 35s) (180 36%) Word Level Accuracy:1.0000 Sequence Level Accuracy:1.0000 Final Target Accuracy:1.0000
+
+Validation 16m 38s (- 29m 35s) (180 36%) Average Final Target Loss: 0.0200 Average Copy Loss: 0.0000 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+Validation 16m 38s (- 29m 35s) (180 36%) Word Level Accuracy:1.0000 Sequence Level Accuracy:1.0000 Final Target Accuracy:1.0000
+************************************************************************************************************
+
+=> Saving a new best
+=> Saving a new best
+Train 18m 16s (- 27m 25s) (200 40%) Average Final Target Loss: 0.0004 Average Copy Loss: 0.0000 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+Train 18m 16s (- 27m 25s) (200 40%) Word Level Accuracy:1.0000 Sequence Level Accuracy:1.0000 Final Target Accuracy:1.0000
+
+Validation 18m 16s (- 27m 25s) (200 40%) Average Final Target Loss: 0.0184 Average Copy Loss: 0.0000 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+Validation 18m 16s (- 27m 25s) (200 40%) Word Level Accuracy:1.0000 Sequence Level Accuracy:1.0000 Final Target Accuracy:1.0000
+************************************************************************************************************
+
+=> Saving a new best
+=> Saving a new best
+-------------------Results on Test Sets----------------------------------------------------
+
+test1_heldout.csv  Average Final Target Loss: 0.0536 Average Copy Loss: 0.0000 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+test1_heldout.csv Word Level Accuracy:0.9881 Sequence Level Accuracy:0.9643 Final Target Accuracy:0.9643
+************************************************************************************************************
+
+test2_subset.csv  Average Final Target Loss: 0.0258 Average Copy Loss: 0.0000 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+test2_subset.csv Word Level Accuracy:0.9948 Sequence Level Accuracy:0.9844 Final Target Accuracy:0.9844
+************************************************************************************************************
+
+test3_hybrid.csv  Average Final Target Loss: 0.2343 Average Copy Loss: 0.0000 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+test3_hybrid.csv Word Level Accuracy:0.9167 Sequence Level Accuracy:0.7500 Final Target Accuracy:0.7500
+************************************************************************************************************
+
+test4_unseen.csv  Average Final Target Loss: 0.1010 Average Copy Loss: 0.0000 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+test4_unseen.csv Word Level Accuracy:0.9688 Sequence Level Accuracy:0.9062 Final Target Accuracy:0.9062
+************************************************************************************************************
+
+test5_longer.csv  Average Final Target Loss: 0.2965 Average Copy Loss: 0.0000 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+test5_longer.csv Word Level Accuracy:0.9152 Sequence Level Accuracy:0.7778 Final Target Accuracy:0.7791
+************************************************************************************************************
+Train 20m 48s (- 26m 28s) (220 44%) Average Final Target Loss: 0.0003 Average Copy Loss: 0.0000 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+Train 20m 48s (- 26m 28s) (220 44%) Word Level Accuracy:1.0000 Sequence Level Accuracy:1.0000 Final Target Accuracy:1.0000
+
+Validation 20m 48s (- 26m 28s) (220 44%) Average Final Target Loss: 0.0170 Average Copy Loss: 0.0000 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+Validation 20m 48s (- 26m 28s) (220 44%) Word Level Accuracy:1.0000 Sequence Level Accuracy:1.0000 Final Target Accuracy:1.0000
+************************************************************************************************************
+
+=> Saving a new best
+=> Saving a new best
+Train 22m 26s (- 24m 19s) (240 48%) Average Final Target Loss: 0.0003 Average Copy Loss: 0.0000 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+Train 22m 26s (- 24m 19s) (240 48%) Word Level Accuracy:1.0000 Sequence Level Accuracy:1.0000 Final Target Accuracy:1.0000
+
+Validation 22m 26s (- 24m 19s) (240 48%) Average Final Target Loss: 0.0159 Average Copy Loss: 0.0000 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+Validation 22m 26s (- 24m 19s) (240 48%) Word Level Accuracy:1.0000 Sequence Level Accuracy:1.0000 Final Target Accuracy:1.0000
+************************************************************************************************************
+
+=> Saving a new best
+=> Saving a new best
+Train 24m 5s (- 22m 14s) (260 52%) Average Final Target Loss: 0.0003 Average Copy Loss: 0.0000 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+Train 24m 5s (- 22m 14s) (260 52%) Word Level Accuracy:1.0000 Sequence Level Accuracy:1.0000 Final Target Accuracy:1.0000
+
+Validation 24m 5s (- 22m 14s) (260 52%) Average Final Target Loss: 0.0150 Average Copy Loss: 0.0000 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+Validation 24m 5s (- 22m 14s) (260 52%) Word Level Accuracy:1.0000 Sequence Level Accuracy:1.0000 Final Target Accuracy:1.0000
+************************************************************************************************************
+
+=> Saving a new best
+=> Saving a new best
+Train 25m 49s (- 20m 17s) (280 56%) Average Final Target Loss: 0.0003 Average Copy Loss: 0.0000 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+Train 25m 49s (- 20m 17s) (280 56%) Word Level Accuracy:1.0000 Sequence Level Accuracy:1.0000 Final Target Accuracy:1.0000
+
+Validation 25m 49s (- 20m 17s) (280 56%) Average Final Target Loss: 0.0141 Average Copy Loss: 0.0000 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+Validation 25m 49s (- 20m 17s) (280 56%) Word Level Accuracy:1.0000 Sequence Level Accuracy:1.0000 Final Target Accuracy:1.0000
+************************************************************************************************************
+
+=> Saving a new best
+=> Saving a new best
+Train 27m 27s (- 18m 18s) (300 60%) Average Final Target Loss: 0.0002 Average Copy Loss: 0.0000 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+Train 27m 27s (- 18m 18s) (300 60%) Word Level Accuracy:1.0000 Sequence Level Accuracy:1.0000 Final Target Accuracy:1.0000
+
+Validation 27m 27s (- 18m 18s) (300 60%) Average Final Target Loss: 0.0133 Average Copy Loss: 0.0000 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+Validation 27m 27s (- 18m 18s) (300 60%) Word Level Accuracy:1.0000 Sequence Level Accuracy:1.0000 Final Target Accuracy:1.0000
+************************************************************************************************************
+
+=> Saving a new best
+=> Saving a new best
+-------------------Results on Test Sets----------------------------------------------------
+
+test1_heldout.csv  Average Final Target Loss: 0.0467 Average Copy Loss: 0.0000 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+test1_heldout.csv Word Level Accuracy:0.9881 Sequence Level Accuracy:0.9643 Final Target Accuracy:0.9643
+************************************************************************************************************
+
+test2_subset.csv  Average Final Target Loss: 0.0209 Average Copy Loss: 0.0000 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+test2_subset.csv Word Level Accuracy:1.0000 Sequence Level Accuracy:1.0000 Final Target Accuracy:1.0000
+************************************************************************************************************
+
+test3_hybrid.csv  Average Final Target Loss: 0.2236 Average Copy Loss: 0.0000 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+test3_hybrid.csv Word Level Accuracy:0.9201 Sequence Level Accuracy:0.7604 Final Target Accuracy:0.7604
+************************************************************************************************************
+
+test4_unseen.csv  Average Final Target Loss: 0.0873 Average Copy Loss: 0.0000 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+test4_unseen.csv Word Level Accuracy:0.9688 Sequence Level Accuracy:0.9062 Final Target Accuracy:0.9062
+************************************************************************************************************
+
+test5_longer.csv  Average Final Target Loss: 0.2908 Average Copy Loss: 0.0000 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+test5_longer.csv Word Level Accuracy:0.9195 Sequence Level Accuracy:0.7893 Final Target Accuracy:0.7903
+************************************************************************************************************
+Train 29m 57s (- 16m 51s) (320 64%) Average Final Target Loss: 0.0002 Average Copy Loss: 0.0000 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+Train 29m 57s (- 16m 51s) (320 64%) Word Level Accuracy:1.0000 Sequence Level Accuracy:1.0000 Final Target Accuracy:1.0000
+
+Validation 29m 57s (- 16m 51s) (320 64%) Average Final Target Loss: 0.0127 Average Copy Loss: 0.0000 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+Validation 29m 57s (- 16m 51s) (320 64%) Word Level Accuracy:1.0000 Sequence Level Accuracy:1.0000 Final Target Accuracy:1.0000
+************************************************************************************************************
+
+=> Saving a new best
+=> Saving a new best
+Train 31m 35s (- 14m 51s) (340 68%) Average Final Target Loss: 0.0002 Average Copy Loss: 0.0000 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+Train 31m 35s (- 14m 51s) (340 68%) Word Level Accuracy:1.0000 Sequence Level Accuracy:1.0000 Final Target Accuracy:1.0000
+
+Validation 31m 35s (- 14m 51s) (340 68%) Average Final Target Loss: 0.0121 Average Copy Loss: 0.0000 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+Validation 31m 35s (- 14m 51s) (340 68%) Word Level Accuracy:1.0000 Sequence Level Accuracy:1.0000 Final Target Accuracy:1.0000
+************************************************************************************************************
+
+=> Saving a new best
+=> Saving a new best
+Train 33m 19s (- 12m 57s) (360 72%) Average Final Target Loss: 0.0002 Average Copy Loss: 0.0000 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+Train 33m 19s (- 12m 57s) (360 72%) Word Level Accuracy:1.0000 Sequence Level Accuracy:1.0000 Final Target Accuracy:1.0000
+
+Validation 33m 19s (- 12m 57s) (360 72%) Average Final Target Loss: 0.0116 Average Copy Loss: 0.0000 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+Validation 33m 19s (- 12m 57s) (360 72%) Word Level Accuracy:1.0000 Sequence Level Accuracy:1.0000 Final Target Accuracy:1.0000
+************************************************************************************************************
+
+=> Saving a new best
+=> Saving a new best
+Train 34m 58s (- 11m 2s) (380 76%) Average Final Target Loss: 0.0002 Average Copy Loss: 0.0000 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+Train 34m 58s (- 11m 2s) (380 76%) Word Level Accuracy:1.0000 Sequence Level Accuracy:1.0000 Final Target Accuracy:1.0000
+
+Validation 34m 58s (- 11m 2s) (380 76%) Average Final Target Loss: 0.0112 Average Copy Loss: 0.0000 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+Validation 34m 58s (- 11m 2s) (380 76%) Word Level Accuracy:1.0000 Sequence Level Accuracy:1.0000 Final Target Accuracy:1.0000
+************************************************************************************************************
+
+=> Saving a new best
+=> Saving a new best
+Train 36m 37s (- 9m 9s) (400 80%) Average Final Target Loss: 0.0002 Average Copy Loss: 0.0000 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+Train 36m 37s (- 9m 9s) (400 80%) Word Level Accuracy:1.0000 Sequence Level Accuracy:1.0000 Final Target Accuracy:1.0000
+
+Validation 36m 37s (- 9m 9s) (400 80%) Average Final Target Loss: 0.0107 Average Copy Loss: 0.0000 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+Validation 36m 37s (- 9m 9s) (400 80%) Word Level Accuracy:1.0000 Sequence Level Accuracy:1.0000 Final Target Accuracy:1.0000
+************************************************************************************************************
+
+=> Saving a new best
+=> Saving a new best
+-------------------Results on Test Sets----------------------------------------------------
+
+test1_heldout.csv  Average Final Target Loss: 0.0430 Average Copy Loss: 0.0000 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+test1_heldout.csv Word Level Accuracy:0.9881 Sequence Level Accuracy:0.9643 Final Target Accuracy:0.9643
+************************************************************************************************************
+
+test2_subset.csv  Average Final Target Loss: 0.0179 Average Copy Loss: 0.0000 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+test2_subset.csv Word Level Accuracy:1.0000 Sequence Level Accuracy:1.0000 Final Target Accuracy:1.0000
+************************************************************************************************************
+
+test3_hybrid.csv  Average Final Target Loss: 0.2181 Average Copy Loss: 0.0000 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+test3_hybrid.csv Word Level Accuracy:0.9219 Sequence Level Accuracy:0.7656 Final Target Accuracy:0.7656
+************************************************************************************************************
+
+test4_unseen.csv  Average Final Target Loss: 0.0801 Average Copy Loss: 0.0000 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+test4_unseen.csv Word Level Accuracy:0.9688 Sequence Level Accuracy:0.9062 Final Target Accuracy:0.9062
+************************************************************************************************************
+
+test5_longer.csv  Average Final Target Loss: 0.2865 Average Copy Loss: 0.0000 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+test5_longer.csv Word Level Accuracy:0.9221 Sequence Level Accuracy:0.7961 Final Target Accuracy:0.7969
+************************************************************************************************************
+Train 39m 20s (- 7m 29s) (420 84%) Average Final Target Loss: 0.0002 Average Copy Loss: 0.0000 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+Train 39m 20s (- 7m 29s) (420 84%) Word Level Accuracy:1.0000 Sequence Level Accuracy:1.0000 Final Target Accuracy:1.0000
+
+Validation 39m 20s (- 7m 29s) (420 84%) Average Final Target Loss: 0.0103 Average Copy Loss: 0.0000 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+Validation 39m 20s (- 7m 29s) (420 84%) Word Level Accuracy:1.0000 Sequence Level Accuracy:1.0000 Final Target Accuracy:1.0000
+************************************************************************************************************
+
+=> Saving a new best
+=> Saving a new best
+Train 40m 57s (- 5m 35s) (440 88%) Average Final Target Loss: 0.0001 Average Copy Loss: 0.0000 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+Train 40m 57s (- 5m 35s) (440 88%) Word Level Accuracy:1.0000 Sequence Level Accuracy:1.0000 Final Target Accuracy:1.0000
+
+Validation 40m 57s (- 5m 35s) (440 88%) Average Final Target Loss: 0.0099 Average Copy Loss: 0.0000 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+Validation 40m 57s (- 5m 35s) (440 88%) Word Level Accuracy:1.0000 Sequence Level Accuracy:1.0000 Final Target Accuracy:1.0000
+************************************************************************************************************
+
+=> Saving a new best
+=> Saving a new best
+Train 42m 34s (- 3m 42s) (460 92%) Average Final Target Loss: 0.0001 Average Copy Loss: 0.0000 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+Train 42m 34s (- 3m 42s) (460 92%) Word Level Accuracy:1.0000 Sequence Level Accuracy:1.0000 Final Target Accuracy:1.0000
+
+Validation 42m 34s (- 3m 42s) (460 92%) Average Final Target Loss: 0.0096 Average Copy Loss: 0.0000 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+Validation 42m 34s (- 3m 42s) (460 92%) Word Level Accuracy:1.0000 Sequence Level Accuracy:1.0000 Final Target Accuracy:1.0000
+************************************************************************************************************
+
+=> Saving a new best
+=> Saving a new best
+Train 44m 21s (- 1m 50s) (480 96%) Average Final Target Loss: 0.0001 Average Copy Loss: 0.0000 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+Train 44m 21s (- 1m 50s) (480 96%) Word Level Accuracy:1.0000 Sequence Level Accuracy:1.0000 Final Target Accuracy:1.0000
+
+Validation 44m 21s (- 1m 50s) (480 96%) Average Final Target Loss: 0.0093 Average Copy Loss: 0.0000 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+Validation 44m 21s (- 1m 50s) (480 96%) Word Level Accuracy:1.0000 Sequence Level Accuracy:1.0000 Final Target Accuracy:1.0000
+************************************************************************************************************
+
+=> Saving a new best
+=> Saving a new best
+Train 46m 13s (- 0m 0s) (500 100%) Average Final Target Loss: 0.0001 Average Copy Loss: 0.0000 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+Train 46m 13s (- 0m 0s) (500 100%) Word Level Accuracy:1.0000 Sequence Level Accuracy:1.0000 Final Target Accuracy:1.0000
+
+Validation 46m 13s (- 0m 0s) (500 100%) Average Final Target Loss: 0.0090 Average Copy Loss: 0.0000 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+Validation 46m 13s (- 0m 0s) (500 100%) Word Level Accuracy:1.0000 Sequence Level Accuracy:1.0000 Final Target Accuracy:1.0000
+************************************************************************************************************
+
+=> Saving a new best
+=> Saving a new best
+-------------------Results on Test Sets----------------------------------------------------
+
+test1_heldout.csv  Average Final Target Loss: 0.0401 Average Copy Loss: 0.0000 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+test1_heldout.csv Word Level Accuracy:0.9881 Sequence Level Accuracy:0.9643 Final Target Accuracy:0.9643
+************************************************************************************************************
+
+test2_subset.csv  Average Final Target Loss: 0.0159 Average Copy Loss: 0.0000 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+test2_subset.csv Word Level Accuracy:1.0000 Sequence Level Accuracy:1.0000 Final Target Accuracy:1.0000
+************************************************************************************************************
+
+test3_hybrid.csv  Average Final Target Loss: 0.2124 Average Copy Loss: 0.0000 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+test3_hybrid.csv Word Level Accuracy:0.9219 Sequence Level Accuracy:0.7656 Final Target Accuracy:0.7656
+************************************************************************************************************
+
+test4_unseen.csv  Average Final Target Loss: 0.0744 Average Copy Loss: 0.0000 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+test4_unseen.csv Word Level Accuracy:0.9792 Sequence Level Accuracy:0.9375 Final Target Accuracy:0.9375
+************************************************************************************************************
+
+test5_longer.csv  Average Final Target Loss: 0.2798 Average Copy Loss: 0.0000 Attention Loss: 0.0000 Average Intermediate Loss:0.0000
+
+test5_longer.csv Word Level Accuracy:0.9255 Sequence Level Accuracy:0.8049 Final Target Accuracy:0.8054
+************************************************************************************************************
+*********End Training*********
+
+  notice: Q: "...sara_stats": -------------------Begin of SURFsara epilogue----------------------------------
+Q: "...sara_stats": This output was generated by the SURFsara epilogue script
+Q: "...sara_stats": Your job [case4_batch.sh] has been executed in queue [gpu] with
+Q: "...sara_stats": the following PBS arguments:
+Q: "...sara_stats":    ncpus=1,neednodes=1,nodes=1,walltime=05:00:00
+Q: "...sara_stats":    .
+Q: "...sara_stats": Resources used in job [1315723.batch1.lisa.surfsara.nl] with name [case4_batch.sh]:
+Q: "...sara_stats":    cput=00:44:45,energy_used=0,mem=2407044kb,vmem=42553288kb,walltime=00:47:54
+Q: "...sara_stats":    r30n7.lisa.surfsara.nl
+Q: "...sara_stats":    .
+Q: "...sara_stats": Job start and end time:
+Q: "...sara_stats":   Job start time: Mon Apr  9 19:45:48 CEST 2018
+Q: "...sara_stats":   Job end time  : Mon Apr  9 20:33:52 CEST 2018
+Q: "...sara_stats": ---------------------------------------------------------------------------
+Q: "...sara_stats": WARNING: It seems that this job did not use scratch space.
+Q: "...sara_stats": WARNING: It is strongly recommended to do so. See the following URL
+Q: "...sara_stats":          for more information:
+Q: "...sara_stats":  - https://www.surfsara.nl/systems/lisa/filesystems#The_scratch_file_system
+Q: "...sara_stats": ---------------------End of SURFsara epilogue----------------------------------
