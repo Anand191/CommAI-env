@@ -2,22 +2,36 @@ import random
 import torch
 from torch.autograd import Variable
 import pandas as pd
+import numpy as np
 import os
+
+random.seed(100)
 
 SOS_token = 0
 EOS_token = 1
 MAX_LENGTH = 6
+MAX_COMP_LENGTH = 5
 
 fnames = ['train.csv','validation.csv', 'test1_heldout.csv','test2_subset.csv', 'test3_hybrid.csv',
-          'test4_unseen.csv', 'test5_longer.csv']
+          'test4_unseen.csv']
+
+split_names = ['seen', 'incremental', 'new']
+comp_lengths = np.arange(3, MAX_COMP_LENGTH+1, dtype=int).tolist()
+lnames = []
+for l in comp_lengths:
+    for split in split_names:
+        name = 'test_longer_{}.csv'.format(split+str(l))
+        lnames.append(name)
+
+fnames = fnames + lnames
 
 class Lang:
     def __init__(self, name):
         self.name = name
         self.word2index = {}
         self.word2count = {}
-        self.index2word = {0: "SOS", 1: "EOS"} #2: "EOS"
-        self.n_words = 2  # Count SOS and PAD #remove EOS for now
+        self.index2word = {0: "SOS"} #1: "EOS"
+        self.n_words = 1  # Count SOS and PAD #remove EOS for now
 
     def addSentence(self, sentence):
         for word in sentence.split(' '):
@@ -71,8 +85,12 @@ class DataPrep(object):
         print(output_lang.name, output_lang.n_words)
         return input_lang, output_lang, pairs
 
-    def language_pairs(self):
-        self.input_lang, self.output_lang, pairs_tr = self.prepareData('task_tr', 'out_tr',self.master_data[0])
+    def language_pairs(self, inlang = None, outlang = None):
+        if ((inlang is not None ) and (outlang is not None)):
+            self.input_lang, self.output_lang = inlang, outlang
+            _, _, pairs_tr = self.prepareData('task_tr', 'out_tr',self.master_data[0])
+        else:
+            self.input_lang, self.output_lang, pairs_tr = self.prepareData('task_tr', 'out_tr',self.master_data[0])
         self.pairs.append(pairs_tr)
         for i in range(1, len(self.master_data)):
             _,_,pairs_temp = self.prepareData('task','out', self.master_data[i])
@@ -88,7 +106,7 @@ class DataPrep(object):
 
     def variableFromSentence(self,lang, sentence):
         indexes = self.indexesFromSentence(lang, sentence)
-        indexes.append(EOS_token)
+        #indexes.append(EOS_token)
         result = Variable(torch.LongTensor(indexes).view(-1, 1))
         if self.use_cuda:
             return result.cuda()

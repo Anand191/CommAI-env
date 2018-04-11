@@ -28,7 +28,7 @@ def evaluate(encoder, decoder, sentence, input_lang, output_lang, variableFromSe
     decoded_words = []
     decoder_attentions = torch.zeros(max_length, max_length)
 
-    ponder_step = input_length-1
+    ponder_step = input_length
     for di in range(ponder_step):
         target_weight = Variable(attn_targets[di]).unsqueeze(0).unsqueeze(0)
         target_weight = target_weight.cuda() if use_cuda else target_weight

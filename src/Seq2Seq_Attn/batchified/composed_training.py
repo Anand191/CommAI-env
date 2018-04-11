@@ -37,9 +37,9 @@ def trainIters(encoder, decoder, n_iters, training_pairs, test_pairs, infer_pair
     wc_train = 0
     wc_dev = 0
     for tr in training_pairs:
-        wc_train += (tr[1].size()[0] -1)
+        wc_train += (tr[1].size()[0]) # -1)
     for te in test_pairs:
-        wc_dev += (te[1].size()[0] -1)
+        wc_dev += (te[1].size()[0]) # -1)
 
     print_loss_total = 0  # Reset every print_every
     plot_loss_total = 0  # Reset every plot_every

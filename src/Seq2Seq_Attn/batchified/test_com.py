@@ -24,7 +24,7 @@ def test(encoder, decoder, input_variable, target_variable,criterion2, use_cuda 
     attn_targets = torch.FloatTensor(np.eye(input_length))
     ########################################################################################################################
     i = 0
-    ponder_step = input_length - 1
+    ponder_step = input_length
     attn_loss = 0
     copy_loss = 0
     interim_loss = 0
@@ -51,7 +51,8 @@ def test(encoder, decoder, input_variable, target_variable,criterion2, use_cuda 
         decoder_input = decoder_input.cuda() if use_cuda else decoder_input
         final_outputs.append(decoder_input.data[0][0])
         i += 1
-    target_loss += criterion2(decoder_output, target_variable[-2])
+    target_loss += criterion2(decoder_output, target_variable[-1])
+
     losses['final_target_loss'] = target_loss.data[0] / ponder_step
     if (use_copy):
         target_loss += copy_loss
@@ -65,7 +66,8 @@ def test(encoder, decoder, input_variable, target_variable,criterion2, use_cuda 
         target_loss += interim_loss
         losses['interim_loss'] = interim_loss.data[0] / ponder_step
     metrics = Metrics()
-    target_outputs = target_variable.cpu().data[:-1].squeeze(-1).numpy().tolist()
+    target_outputs = target_variable.cpu().data.squeeze(-1).numpy().tolist()
+    #target_outputs = target_variable.cpu().data[:-1].squeeze(-1).numpy().tolist()
     accuracies['word_level'] = metrics.word_level(final_outputs, target_outputs)
     accuracies['seq_level'] = metrics.seq_level(final_outputs, target_outputs)
     accuracies['final_target'] = metrics.final_target(final_outputs, target_outputs)

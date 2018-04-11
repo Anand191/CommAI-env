@@ -34,7 +34,7 @@ def train(input_variable, target_variable, encoder, decoder, encoder_optimizer, 
     #for di in range(target_length-1):
 ########################################################################################################################
     i = 0
-    ponder_step = input_length - 1
+    ponder_step = input_length
     attn_loss = 0
     copy_loss = 0
     interim_loss = 0
@@ -62,7 +62,7 @@ def train(input_variable, target_variable, encoder, decoder, encoder_optimizer, 
         else:
             interim_loss += criterion2(decoder_output, target_variable[p_step])
         i += 1
-    target_loss += criterion2(decoder_output, target_variable[-2])
+    target_loss += criterion2(decoder_output, target_variable[-1])
 
     losses['final_target_loss'] = target_loss.data[0]/ponder_step
     if(use_copy):
@@ -86,7 +86,8 @@ def train(input_variable, target_variable, encoder, decoder, encoder_optimizer, 
     # else:
     #     acc = 0
     metrics = Metrics()
-    target_outputs = target_variable.cpu().data[:-1].squeeze(-1).numpy().tolist()
+    target_outputs = target_variable.cpu().data.squeeze(-1).numpy().tolist()
+    #target_outputs = target_variable.cpu().data[:-1].squeeze(-1).numpy().tolist()
     accuracies['seq_level'] = metrics.seq_level(final_outputs, target_outputs)
     accuracies['word_level'] = metrics.word_level(final_outputs, target_outputs)
     accuracies['final_target'] = metrics.final_target(final_outputs, target_outputs)

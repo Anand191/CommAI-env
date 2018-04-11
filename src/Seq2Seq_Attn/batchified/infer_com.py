@@ -13,6 +13,7 @@ def inference(encoder, decoder, input_variable, target_variable,criterion2, use_
     input_length = input_variable.size()[0]
     target_length = target_variable.size()[0]
 
+
     encoder.eval()
     decoder.eval()
 
@@ -27,7 +28,7 @@ def inference(encoder, decoder, input_variable, target_variable,criterion2, use_
     attn_targets = torch.FloatTensor(np.eye(input_length))
     ########################################################################################################################
     i = 0
-    ponder_step = input_length - 1
+    ponder_step = input_length
     attn_loss = 0
     copy_loss = 0
     interim_loss = 0
@@ -55,7 +56,7 @@ def inference(encoder, decoder, input_variable, target_variable,criterion2, use_
         final_outputs.append(decoder_input.data[0][0])
         i += 1
 
-    target_loss += criterion2(decoder_output, target_variable[-2])
+    target_loss += criterion2(decoder_output, target_variable[-1])
     losses['final_target_loss'] = target_loss.data[0] / ponder_step
     # tv, ti = decoder_output.data.topk(1)
     # do = ti[0][0]
@@ -77,7 +78,8 @@ def inference(encoder, decoder, input_variable, target_variable,criterion2, use_
         target_loss += interim_loss
         losses['interim_loss'] = interim_loss.data[0] / ponder_step
     metrics = Metrics()
-    target_outputs = target_variable.cpu().data[:-1].squeeze(-1).numpy().tolist()
+    target_outputs = target_variable.cpu().data.squeeze(-1).numpy().tolist()
+    #target_outputs = target_variable.cpu().data[:-1].squeeze(-1).numpy().tolist()
     accuracies['word_level'] = metrics.word_level(final_outputs, target_outputs)
     accuracies['seq_level'] = metrics.seq_level(final_outputs, target_outputs)
     accuracies['final_target'] = metrics.final_target(final_outputs, target_outputs)
@@ -90,8 +92,7 @@ def inferIters(encoder, decoder, infer_pairs, use_cuda=False, use_copy=True, use
                train_attn = True,name='Test'):
     wc_infer = 0
     for tr in infer_pairs:
-        wc_infer += (tr[1].size()[0] -1)
-
+        wc_infer += (tr[1].size()[0]) # -1)
     print_loss_total = 0  # Reset every print_every
     print_acc_total = 0
     target_inf, copy_inf, interim_inf, attn_inf = 0, 0, 0, 0
@@ -129,17 +130,18 @@ def inferIters(encoder, decoder, infer_pairs, use_cuda=False, use_copy=True, use
     interim_inf += (tl3 / len(infer_pairs))
 
     print('')
-    print('%s  %s: %.4f %s: %.4f %s: %.4f %s:%.4f'
-          % (name,
-             "Average Final Target Loss", target_inf,
-             "Average Copy Loss", copy_inf,
-             "Attention Loss", attn_inf,
-             "Average Intermediate Loss", interim_inf
-             ))
-    print('')
+    # print('%s  %s: %.4f %s: %.4f %s: %.4f %s:%.4f'
+    #       % (name,
+    #          "Average Final Target Loss", target_inf,
+    #          "Average Copy Loss", copy_inf,
+    #          "Attention Loss", attn_inf,
+    #          "Average Intermediate Loss", interim_inf
+    #          ))
+    # print('')
     print('%s %s:%.4f %s:%.4f %s:%.4f' % (name,
                                           "Word Level Accuracy", word_inf,
                                           "Sequence Level Accuracy", seq_inf,
                                           "Final Target Accuracy", print_acc_total
                                           ))
     print('************************************************************************************************************')
+    return(name, word_inf,seq_inf,print_acc_total)
