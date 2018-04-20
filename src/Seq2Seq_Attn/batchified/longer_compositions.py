@@ -48,16 +48,18 @@ class longer_splits(object):
 
     def all_composition(self):
         self._max_len()
-        var = ''
-        if(self.sample == self.max_size):
-            var = input("The total number of splits generated might exceed memory. Continue? Y/N")
-        if (var == 'N' or var =='n'):
-            print('Exiting')
-            return
+        # var = ''
+        # if(self.sample == self.max_size):
+        #     var = input("The total number of splits generated might exceed memory. Continue? Y/N")
+        # if (var == 'N' or var =='n'):
+        #     print('Exiting')
+        #     return
         if(self.sample <= self.max_size):
             split = self._gettuples()
         else:
-            raise ValueError ("sample size greater than the number of possible combinations for this split type")
+            self.sample = self.max_size
+            split = self._gettuples()
+            #raise ValueError ("sample size greater than the number of possible combinations for this split type")
 
         return split
 

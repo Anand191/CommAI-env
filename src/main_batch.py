@@ -7,7 +7,7 @@ import os
 #import pandas as pd
 from Seq2Seq_Attn.batchified.Model2 import EncoderRNN, BahdanauAttnDecoderRNN
 from Seq2Seq_Attn.batchified.composed_training import trainIters
-from Seq2Seq_Attn.batchified.data_com_new import DataPrep, fnames
+from Seq2Seq_Attn.batchified.data_com_new import DataPrep, long_names
 
 use_cuda = torch.cuda.is_available()
 print("Using Cuda : %s"%use_cuda)
@@ -32,11 +32,20 @@ parser.add_argument('--use_copy', action='store_true')
 parser.add_argument('--use_attn', action='store_true')
 parser.add_argument('--use_interim', action='store_true')
 parser.add_argument('--train_attn', action='store_true')
+parser.add_argument('--max_comp_len', type=int, help='length of longest composition', default=3)
 
 
 opt = parser.parse_args()
 print(opt)
 
+fnames = ['train.csv','validation.csv', 'test1_heldout2.csv','test2_subset2.csv', 'test3_hybrid2.csv',
+          'test4_unseen2.csv']
+split_names = ['seen', 'incremental', 'new']
+
+longer_names = long_names(opt.max_comp_len)
+lnames = longer_names.get_lnames(split_names)
+
+fnames = fnames+lnames
 
 class GetData(object):
     def __init__(self, path):
@@ -44,7 +53,7 @@ class GetData(object):
 
     def data_prep(self):
         preprocess = DataPrep(self.path, use_cuda)
-        preprocess.read_data()
+        preprocess.read_data(fnames)
         preprocess.language_pairs()
         preprocess.data_pairs()
 

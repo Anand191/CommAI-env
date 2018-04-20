@@ -90,16 +90,16 @@ class data_dump(object):
         df_val.to_csv('./data/validation.csv',sep='\t',header=False,index=False)
 
         df_heldout = pd.DataFrame(data_held)
-        df_heldout.to_csv('./data/test1_heldout.csv',sep='\t',header=False,index=False)
+        df_heldout.to_csv('./data/test1_heldout2.csv',sep='\t',header=False,index=False)
 
         df_subset = pd.DataFrame(master_data_subset)
-        df_subset.to_csv('./data/test2_subset.csv',sep='\t',header=False,index=False)
+        df_subset.to_csv('./data/test2_subset2.csv',sep='\t',header=False,index=False)
 
         df_hybrid = pd.DataFrame(master_data_hybrid)
-        df_hybrid.to_csv('./data/test3_hybrid.csv',sep='\t',header=False,index=False)
+        df_hybrid.to_csv('./data/test3_hybrid2.csv',sep='\t',header=False,index=False)
 
         df_unseen = pd.DataFrame(master_data_unseen)
-        df_unseen.to_csv('./data/test4_unseen.csv',sep='\t',header=False,index=False)
+        df_unseen.to_csv('./data/test4_unseen2.csv',sep='\t',header=False,index=False)
 
 ########################################################################################################################
 

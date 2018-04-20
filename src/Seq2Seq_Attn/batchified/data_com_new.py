@@ -10,20 +10,20 @@ random.seed(100)
 SOS_token = 0
 EOS_token = 1
 MAX_LENGTH = 6
-MAX_COMP_LENGTH = 5
 
-fnames = ['train.csv','validation.csv', 'test1_heldout.csv','test2_subset.csv', 'test3_hybrid.csv',
-          'test4_unseen.csv']
 
-split_names = ['seen', 'incremental', 'new']
-comp_lengths = np.arange(3, MAX_COMP_LENGTH+1, dtype=int).tolist()
-lnames = []
-for l in comp_lengths:
-    for split in split_names:
-        name = 'test_longer_{}.csv'.format(split+str(l))
-        lnames.append(name)
+class long_names(object):
+    def __init__(self, max_comp_len):
+        self.MAX_COMP_LENGTH = max_comp_len
 
-fnames = fnames + lnames
+    def get_lnames(self, split_names):
+        comp_lengths = np.arange(3, self.MAX_COMP_LENGTH + 1, dtype=int).tolist()
+        lnames = []
+        for l in comp_lengths:
+            for split in split_names:
+                name = 'test_longer_{}.csv'.format(split+str(l))
+                lnames.append(name)
+        return lnames
 
 class Lang:
     def __init__(self, name):
@@ -55,7 +55,7 @@ class DataPrep(object):
         self.pairs = []
         self.tensor_pairs = []
 
-    def read_data(self):
+    def read_data(self, fnames):
         for fname in fnames:
             df = pd.read_csv(os.path.join(self.path, fname), delimiter='\t', header=None)
             self.master_data.append(df.values)

@@ -7,7 +7,7 @@ import os
 import pandas as pd
 import matplotlib.pyplot as plt
 from Seq2Seq_Attn.batchified.evaluate_com import evaluateAndShowAttention
-from Seq2Seq_Attn.batchified.data_com_new import DataPrep, fnames, lnames, MAX_COMP_LENGTH
+from Seq2Seq_Attn.batchified.data_com_new import DataPrep, long_names
 from Seq2Seq_Attn.batchified.infer_com import inferIters
 from Seq2Seq_Attn.batchified.checkpoint import checkpoint
 
@@ -23,6 +23,7 @@ parser.add_argument('--use_copy', action='store_true')
 parser.add_argument('--use_attn', action='store_true')
 parser.add_argument('--use_interim', action='store_true')
 parser.add_argument('--train_attn', action='store_true')
+parser.add_argument('--max_comp_len', type=int, help='length of longest composition', default=10)
 
 
 opt = parser.parse_args()
@@ -48,6 +49,14 @@ print(opt)
 #     plt.close(fig)
 
 print('*********Run in Inference Mode**********')
+fnames = ['train.csv','validation.csv', 'test1_heldout2.csv','test2_subset2.csv', 'test3_hybrid2.csv',
+          'test4_unseen2.csv']
+split_names = ['seen', 'incremental', 'new']
+longer_names = long_names(opt.max_comp_len)
+lnames = longer_names.get_lnames(split_names)
+
+fnames = fnames+lnames
+
 path1 = opt.encoder_weights
 path2 = opt.decoder_weights
 cp1 = checkpoint.load(path1,use_cuda)
@@ -66,7 +75,7 @@ class GetData(object):
 
     def data_prep(self, inlang=None, outlang=None):
         preprocess = DataPrep(self.path, use_cuda)
-        preprocess.read_data()
+        preprocess.read_data(fnames)
         preprocess.language_pairs(inlang, outlang)
         preprocess.data_pairs()
         # print(preprocess.input_lang.index2word)
@@ -78,22 +87,29 @@ class GetData(object):
 preprocessing = GetData(opt.data)
 all_pairs, master_data, vfs = preprocessing.data_prep(input_vocab, output_vocab)
 plot_data = np.zeros((len(lnames), 5), dtype=object)
+plot_test = np.zeros((len(list(set(fnames)-set(lnames)))-2,4), dtype=object)
 infer_pairs = all_pairs[2:]
 comp_len = []
-for n in range(3,MAX_COMP_LENGTH+1):
+for n in range(3,opt.max_comp_len+1):
     arr = np.repeat(n,3).tolist()
     comp_len += arr
 plot_data[:,0] = np.asarray(comp_len)
 j = 0
+k = 0
 for i, ip in enumerate(infer_pairs):
     res = inferIters(encoder, decoder, ip, use_cuda, opt.use_copy, opt.use_attn, opt.use_interim, opt.train_attn, fnames[2:][i])
     if(fnames[2:][i] not in lnames):
-        continue
+        plot_test[k,:] = np.asarray(list(res))
+        k += 1
+        #continue
     else:
         plot_data[j,1:] = np.asarray(list(res))
         j += 1
-df = pd.DataFrame(plot_data, columns=['comp_length', 'comp_name', 'word_acc', 'seq_acc', 'final_target_acc'])
-df.to_csv(os.path.join(opt.infer,'plot_longer.csv'))
+    #print(plot_test)
+fd = pd.DataFrame(plot_test, columns=['compName', 'wordacc', 'seqacc', 'finaltargetacc'])
+fd.to_csv(os.path.join(opt.infer,'plot_test.csv'), index=False)
+df = pd.DataFrame(plot_data, columns=['compLength', 'compName', 'wordacc', 'seqacc', 'finaltargetacc'])
+df.to_csv(os.path.join(opt.infer,'plot_longer.csv'), index=False)
 
 ########################################################################################################################
 # print('*********Begin Plotting*********')

@@ -57,7 +57,7 @@ def inference(encoder, decoder, input_variable, target_variable,criterion2, use_
         i += 1
 
     target_loss += criterion2(decoder_output, target_variable[-1])
-    losses['final_target_loss'] = target_loss.data[0] / ponder_step
+    losses['final_target_loss'] = target_loss.data[0] #/ ponder_step
     # tv, ti = decoder_output.data.topk(1)
     # do = ti[0][0]
     # chk = Variable(torch.LongTensor([do]))
@@ -68,15 +68,15 @@ def inference(encoder, decoder, input_variable, target_variable,criterion2, use_
     #     acc = 0
     if (use_copy):
         target_loss += copy_loss
-        losses['copy_loss'] = copy_loss.data[0] / ponder_step
+        losses['copy_loss'] = copy_loss.data[0] #/ ponder_step
 
     if (use_attn):
-        target_loss += attn_loss
+        target_loss += (attn_loss/ponder_step)
         losses['attn_loss'] = attn_loss.data[0] / ponder_step
 
     if (use_interim):
-        target_loss += interim_loss
-        losses['interim_loss'] = interim_loss.data[0] / ponder_step
+        target_loss += (interim_loss/ (ponder_step-1))
+        losses['interim_loss'] = interim_loss.data[0] / (ponder_step-1)
     metrics = Metrics()
     target_outputs = target_variable.cpu().data.squeeze(-1).numpy().tolist()
     #target_outputs = target_variable.cpu().data[:-1].squeeze(-1).numpy().tolist()
@@ -84,7 +84,7 @@ def inference(encoder, decoder, input_variable, target_variable,criterion2, use_
     accuracies['seq_level'] = metrics.seq_level(final_outputs, target_outputs)
     accuracies['final_target'] = metrics.final_target(final_outputs, target_outputs)
 
-    return (target_loss.data[0] / ponder_step, losses, accuracies)
+    return (target_loss.data[0], losses, accuracies) #/ ponder_step
 
 
 
@@ -129,6 +129,8 @@ def inferIters(encoder, decoder, infer_pairs, use_cuda=False, use_copy=True, use
     attn_inf += (tl2 / len(infer_pairs))
     interim_inf += (tl3 / len(infer_pairs))
 
+    name = name.split('.')[0]
+    name = name.split('_')[-1]
     print('')
     # print('%s  %s: %.4f %s: %.4f %s: %.4f %s:%.4f'
     #       % (name,
@@ -144,4 +146,6 @@ def inferIters(encoder, decoder, infer_pairs, use_cuda=False, use_copy=True, use
                                           "Final Target Accuracy", print_acc_total
                                           ))
     print('************************************************************************************************************')
+    name = name[0:-1]
+
     return(name, word_inf,seq_inf,print_acc_total)

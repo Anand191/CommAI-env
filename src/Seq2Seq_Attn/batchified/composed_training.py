@@ -217,8 +217,8 @@ def trainIters(encoder, decoder, n_iters, training_pairs, test_pairs, infer_pair
             saver_e.save(print_test_l_avg, best_loss, iter + 1)
             saver_d.save(print_test_l_avg, best_loss, iter + 1)
 
-            if (print_test_l_avg < best_loss):
-                best_loss = print_test_l_avg
+            #if (print_test_l_avg < best_loss):
+            best_loss = print_test_l_avg
             ########################################################################################################################
 
         if iter % test_every == 0:
