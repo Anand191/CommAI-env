@@ -72,8 +72,8 @@ class DataPrep(object):
 
         return input_lang, output_lang, pairs
 
-    def prepareData(self,lang1,lang2, reverse=False):
-        input_lang, output_lang, pairs = self.readLangs(lang1,lang2, reverse)
+    def prepareData(self,lang1,lang2, data, reverse=False):
+        input_lang, output_lang, pairs = self.readLangs(lang1,lang2, data, reverse)
         print("Read %s sentence pairs" % len(pairs))
         print("Trimmed to %s sentence pairs" % len(pairs))
         print("Counting words...")

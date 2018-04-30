@@ -112,7 +112,6 @@ class BahdanauAttnDecoderRNN(nn.Module):
             attn_weights = self.attn(last_hidden[-1], encoder_outputs)
         else:
             attn_weights = attn_target
-
         context = attn_weights.bmm(encoder_outputs.transpose(0, 1))  # B x 1 x N
 
         # Combine embedded input word and attended context, run through RNN

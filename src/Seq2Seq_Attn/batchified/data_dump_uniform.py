@@ -13,7 +13,7 @@ class data_dump(object):
     def __init__(self, lt_obj):
         self.lt = lt_obj
 
-        self.atomic_dict, self.train_composed, self.heldout_composed, self.test11_subset, self.test12_subset, self.test11_hybrid, self.test12_hybrid, self.test11_unseen,self.test12_unseen = lt_obj.gen_all_data()
+        self.atomic_dict, self.train_composed, self.train_composed2, self.test11_subset, self.test12_subset, self.test11_hybrid, self.test12_hybrid, self.test11_unseen,self.test12_unseen = lt_obj.gen_all_data()
         self.data_atomic = np.zeros((len(self.atomic_dict)*8,2),dtype=object)
 
     def key_rev(self, key):
@@ -69,19 +69,22 @@ class data_dump(object):
 
     def plot_data(self,df, name):
         splitter = lambda x: x.split(' ')[-1]
+        splitter2 = lambda x: ' '.join(map(str, x.split(' ')[1:]))
         plt.figure()
-        ax = sns.countplot(x=df.iloc[:, -1].apply(splitter))
+        if name=='train':
+            ax = sns.countplot(x=df.iloc[:,0].apply(splitter2))
+        else:
+            ax = sns.countplot(x=df.iloc[:, -1].apply(splitter))
         ax.set_xlabel('Output Bit Strings')
-        plt.savefig("{}.png".format(name))
+        ax.set_xticklabels(ax.get_xticklabels(),rotation=90)
+        plt.savefig("./data2/{}.png".format(name))
         plt.close()
 
 
     def dump_all(self):
-        data_train_val = self.dict_to_arr(self.train_composed)
-        np.random.shuffle(data_train_val)
-        slice_idx = data_train_val.shape[0] - int(np.round(data_train_val.shape[0] * 0.1))
-        data_train, data_val = data_train_val[0:slice_idx,:], data_train_val[slice_idx:,:]
-        data_held =self.dict_to_arr(self.heldout_composed)
+        data_train1 = self.dict_to_arr(self.train_composed)
+        data_train2 =self.dict_to_arr(self.train_composed2)
+        pre_split_train = np.vstack((data_train1, data_train2))
         data_subset1 = self.dict_to_arr(self.test11_subset)
         data_subset2 = self.dict_to_arr(self.test12_subset)
         data_hybrid1 = self.dict_to_arr(self.test11_hybrid)
@@ -89,33 +92,37 @@ class data_dump(object):
         data_unseen1 = self.dict_to_arr(self.test11_unseen)
         data_unseen2 = self.dict_to_arr(self.test12_unseen)
 
+        # np.random.shuffle(data_train_val)
+        # slice_idx = data_train_val.shape[0] - int(np.round(data_train_val.shape[0] * 0.1))
+        # data_train, data_val = data_train_val[0:slice_idx,:], data_train_val[slice_idx:,:]
 
-        master_data_tr = np.vstack((self.data_atomic,data_train))
+        master_data_tr = np.vstack((self.data_atomic,data_train1, data_train2))
         master_data_subset = np.vstack((data_subset1, data_subset2))
         master_data_hybrid = np.vstack((data_hybrid1, data_hybrid2))
         master_data_unseen = np.vstack((data_unseen1, data_unseen2))
 
+        df_ptr = pd.DataFrame(pre_split_train)
 
         df_tr = pd.DataFrame(master_data_tr)
-        df_tr.to_csv('./data/train.csv',sep='\t',header=False,index=False)
+        df_tr.to_csv('./data2/train.csv',sep='\t',header=False,index=False)
 
-        df_val = pd.DataFrame(data_val)
-        df_val.to_csv('./data/validation.csv',sep='\t',header=False,index=False)
+        # df_val = pd.DataFrame(data_val)
+        # df_val.to_csv('./data/validation.csv',sep='\t',header=False,index=False)
 
-        df_heldout = pd.DataFrame(data_held)
-        df_heldout.to_csv('./data/test1_heldout2.csv',sep='\t',header=False,index=False)
+        # df_heldout = pd.DataFrame(data_held)
+        # df_heldout.to_csv('./data/test1_heldout2.csv',sep='\t',header=False,index=False)
 
         df_subset = pd.DataFrame(master_data_subset)
-        df_subset.to_csv('./data/test2_subset2.csv',sep='\t',header=False,index=False)
+        df_subset.to_csv('./data2/test2_subset2.csv',sep='\t',header=False,index=False)
 
         df_hybrid = pd.DataFrame(master_data_hybrid)
-        df_hybrid.to_csv('./data/test3_hybrid2.csv',sep='\t',header=False,index=False)
+        df_hybrid.to_csv('./data2/test3_hybrid2.csv',sep='\t',header=False,index=False)
 
         df_unseen = pd.DataFrame(master_data_unseen)
-        df_unseen.to_csv('./data/test4_unseen2.csv',sep='\t',header=False,index=False)
+        df_unseen.to_csv('./data2/test4_unseen2.csv',sep='\t',header=False,index=False)
 
-        dfs = [df_tr, df_val, df_heldout, df_subset, df_hybrid, df_unseen]
-        names = ['train', 'validation', 'held_ipt', 'held_comp', 'held_tab', 'new_comp']
+        dfs = [df_ptr, df_subset, df_hybrid, df_unseen] #df_val, df_heldout,
+        names = ['train', 'held_comp', 'held_tab', 'new_comp'] #'validation', 'held_ipt',
         for i, df in enumerate(dfs):
             self.plot_data(df, names[i])
 

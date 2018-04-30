@@ -61,8 +61,16 @@ def trainIters(encoder, decoder, n_iters, training_pairs, test_pairs, infer_pair
     word_train, seq_train = 0,0
     word_test, seq_test = 0,0
 
+    #===================================================================================================================
+    '''
+    optimizers and learning rate schedulers
+    '''
     encoder_optimizer = optim.SGD(encoder.parameters(), lr=learning_rate)
     decoder_optimizer = optim.SGD(decoder.parameters(), lr=learning_rate)
+    # encoder_scheduler = optim.lr_scheduler.ReduceLROnPlateau(encoder_optimizer, 'min', verbose=True, patience=print_every)
+    # decoder_scheduler = optim.lr_scheduler.ReduceLROnPlateau(decoder_optimizer, 'min', verbose=True, patience=print_every)
+
+    #===================================================================================================================
 
     ####################################################################################################################
     best_loss = 5.0
@@ -101,7 +109,7 @@ def trainIters(encoder, decoder, n_iters, training_pairs, test_pairs, infer_pair
         plot_loss_total += (temp_loss/len(training_pairs))
 
         print_acc_total += (temp_acc/len(training_pairs))
-        plot_acc_total += (temp_acc / len(training_pairs))
+        plot_acc_total += (a2 / len(training_pairs))
 
         target_train += (l0/len(training_pairs))
         copy_train += (l1/len(training_pairs))
@@ -136,7 +144,7 @@ def trainIters(encoder, decoder, n_iters, training_pairs, test_pairs, infer_pair
             da2 += acc_t['seq_level']
 
         print_test_acc += (test_a / len(test_pairs))
-        plot_test_acc += (test_a / len(test_pairs))
+        plot_test_acc += (da2 / len(test_pairs))
 
         print_test_loss += (test_l / len(test_pairs))
         plot_test_loss += (test_l / len(test_pairs))
@@ -217,8 +225,8 @@ def trainIters(encoder, decoder, n_iters, training_pairs, test_pairs, infer_pair
             saver_e.save(print_test_l_avg, best_loss, iter + 1)
             saver_d.save(print_test_l_avg, best_loss, iter + 1)
 
-            #if (print_test_l_avg < best_loss):
-            best_loss = print_test_l_avg
+            if (print_test_l_avg < best_loss):
+                best_loss = print_test_l_avg
             ########################################################################################################################
 
         if iter % test_every == 0:
@@ -244,6 +252,8 @@ def trainIters(encoder, decoder, n_iters, training_pairs, test_pairs, infer_pair
             plot_test_acc = 0
 
             idx += 1
+        # encoder_scheduler.step((test_l / len(test_pairs)))
+        # decoder_scheduler.step((test_l / len(test_pairs)))
     df = pd.DataFrame(plot_array, columns=['Epoch','Train_Loss', 'Train_Acc', 'Test_Loss', 'Test_Acc'])
     df.to_csv(os.path.join(rpath,'plot_data.csv'))
 

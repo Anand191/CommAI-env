@@ -64,18 +64,18 @@ def train(input_variable, target_variable, encoder, decoder, encoder_optimizer, 
         i += 1
     target_loss += criterion2(decoder_output, target_variable[-1])
 
-    losses['final_target_loss'] = target_loss.data[0] #/ponder_step
+    losses['final_target_loss'] = target_loss.item() #.data[0] #/ponder_step
     if(use_copy):
         target_loss += copy_loss
-        losses['copy_loss'] = copy_loss.data[0] #/ponder_step
+        losses['copy_loss'] = copy_loss.item() #.data[0] #/ponder_step
 
     if(use_attn):
         target_loss += (attn_loss/ponder_step)
-        losses['attn_loss'] = attn_loss.data[0]/ponder_step
+        losses['attn_loss'] = attn_loss.item() #.data[0]/ponder_step
 
     if(use_interim):
         target_loss += (interim_loss/(ponder_step-1))
-        losses['interim_loss'] = interim_loss.data[0]/(ponder_step-1)
+        losses['interim_loss'] = interim_loss.item() #.data[0]/(ponder_step-1)
 
     # tv,ti = decoder_output.data.topk(1)
     # do = ti[0][0]
@@ -106,4 +106,4 @@ def train(input_variable, target_variable, encoder, decoder, encoder_optimizer, 
     encoder_optimizer.step()
     decoder_optimizer.step()
 
-    return (target_loss.data[0],losses,accuracies) #/ponder_step
+    return (target_loss.item(),losses,accuracies) #/ponder_step data[0]
