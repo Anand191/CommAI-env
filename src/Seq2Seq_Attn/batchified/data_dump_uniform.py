@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 from Seq2Seq_Attn.batchified.lookup_tables_dump import lookup_tables
+from Seq2Seq_Attn.batchified.balanced_train import df_com, df_held
 import matplotlib.pyplot as plt
 import seaborn as sns
 sns.set(style="darkgrid")
@@ -73,11 +74,13 @@ class data_dump(object):
         plt.figure()
         if name=='train':
             ax = sns.countplot(x=df.iloc[:,0].apply(splitter2))
+            ax.set_xlabel('Compositions')
         else:
             ax = sns.countplot(x=df.iloc[:, -1].apply(splitter))
-        ax.set_xlabel('Output Bit Strings')
+            ax.set_xlabel('Output Bit Strings')
+        #ax = sns.countplot(x=df.iloc[:, -1].apply(splitter))
         ax.set_xticklabels(ax.get_xticklabels(),rotation=90)
-        plt.savefig("./data2/{}.png".format(name))
+        plt.savefig("./data/{}.png".format(name))
         plt.close()
 
 
@@ -101,28 +104,31 @@ class data_dump(object):
         master_data_hybrid = np.vstack((data_hybrid1, data_hybrid2))
         master_data_unseen = np.vstack((data_unseen1, data_unseen2))
 
-        df_ptr = pd.DataFrame(pre_split_train)
+        # df_ptr = pd.DataFrame(pre_split_train, columns=['ipt', 'copy'])
+        # df_ptr.to_csv('./data2/composed_train.csv', sep='\t', index=False)
+        # df_ptr[['copy','interim', 'opt']] = df_ptr['copy'].str.split(' ',expand=True)
+        # print(df_ptr)
 
-        df_tr = pd.DataFrame(master_data_tr)
-        df_tr.to_csv('./data2/train.csv',sep='\t',header=False,index=False)
+        df_tr = pd.DataFrame(np.vstack((self.data_atomic, df_com)))
+        df_tr.to_csv('./data/train.csv',sep='\t',header=False,index=False)
 
         # df_val = pd.DataFrame(data_val)
         # df_val.to_csv('./data/validation.csv',sep='\t',header=False,index=False)
 
-        # df_heldout = pd.DataFrame(data_held)
-        # df_heldout.to_csv('./data/test1_heldout2.csv',sep='\t',header=False,index=False)
+        df_heldout = df_held#pd.DataFrame(data_held)
+        df_heldout.to_csv('./data/test1_heldout2.csv',sep='\t',header=False,index=False)
 
         df_subset = pd.DataFrame(master_data_subset)
-        df_subset.to_csv('./data2/test2_subset2.csv',sep='\t',header=False,index=False)
+        df_subset.to_csv('./data/test2_subset2.csv',sep='\t',header=False,index=False)
 
         df_hybrid = pd.DataFrame(master_data_hybrid)
-        df_hybrid.to_csv('./data2/test3_hybrid2.csv',sep='\t',header=False,index=False)
+        df_hybrid.to_csv('./data/test3_hybrid2.csv',sep='\t',header=False,index=False)
 
         df_unseen = pd.DataFrame(master_data_unseen)
-        df_unseen.to_csv('./data2/test4_unseen2.csv',sep='\t',header=False,index=False)
+        df_unseen.to_csv('./data/test4_unseen2.csv',sep='\t',header=False,index=False)
 
-        dfs = [df_ptr, df_subset, df_hybrid, df_unseen] #df_val, df_heldout,
-        names = ['train', 'held_comp', 'held_tab', 'new_comp'] #'validation', 'held_ipt',
+        dfs = [df_tr, df_heldout, df_subset, df_hybrid, df_unseen] #df_val, df_heldout,
+        names = ['train', 'held_ipt','held_comp', 'held_tab', 'new_comp'] #'validation', 'held_ipt',
         for i, df in enumerate(dfs):
             self.plot_data(df, names[i])
 
