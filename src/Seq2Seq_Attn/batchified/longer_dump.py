@@ -61,8 +61,10 @@ def actual_run(comp_l, splits, lengths):
     for i, split in enumerate(splits):
         obj = longer_splits(comp_l, split, lengths[i], 100)
         splits = obj.all_composition()
+        if(i==2):
+            print(len(splits))
         # print(obj.max_size)
-        longer_dump(list(set(splits)), 3, split + str(comp_l))
+        longer_dump(list(set(splits)), 4, split + str(comp_l))
 
 
 splits = ['seen', 'incremental', 'new']

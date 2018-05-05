@@ -37,7 +37,7 @@ def train(input_variable, target_variable, encoder, decoder, encoder_optimizer, 
     ponder_step = input_length
     attn_loss = 0
     copy_loss = 0
-    interim_loss = 0
+    interim_loss = torch.tensor(0.0).cuda() if use_cuda else torch.tensor(0.0)
     target_loss = 0
     losses = {'final_target_loss':0,'copy_loss':0, 'attn_loss':0, 'interim_loss':0}
     accuracies = {'word_level':0, 'seq_level':0, 'final_target':0}
@@ -59,8 +59,9 @@ def train(input_variable, target_variable, encoder, decoder, encoder_optimizer, 
         final_outputs.append(decoder_input.data[0][0])
         if (p_step == 0):
             copy_loss += criterion2(decoder_output, target_variable[0])
-        else:
+        elif (p_step < ponder_step-1):
             interim_loss += criterion2(decoder_output, target_variable[p_step])
+
         i += 1
     target_loss += criterion2(decoder_output, target_variable[-1])
 
@@ -71,11 +72,11 @@ def train(input_variable, target_variable, encoder, decoder, encoder_optimizer, 
 
     if(use_attn):
         target_loss += (attn_loss/ponder_step)
-        losses['attn_loss'] = attn_loss.item() #.data[0]/ponder_step
+        losses['attn_loss'] = attn_loss.item()/ponder_step #.data[0]/ponder_step
 
     if(use_interim):
-        target_loss += (interim_loss/(ponder_step-1))
-        losses['interim_loss'] = interim_loss.item() #.data[0]/(ponder_step-1)
+        target_loss += (interim_loss/(ponder_step-2))
+        losses['interim_loss'] = interim_loss.item()/(ponder_step-2) #.data[0]/(ponder_step-1)
 
     # tv,ti = decoder_output.data.topk(1)
     # do = ti[0][0]

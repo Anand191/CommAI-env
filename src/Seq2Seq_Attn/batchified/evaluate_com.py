@@ -38,13 +38,12 @@ def evaluate(encoder, decoder, sentence, input_lang, output_lang, variableFromSe
         decoder_attentions[di,:decoder_attention.size(2)] = decoder_attention.squeeze(0).squeeze(0).cpu().data
         topv, topi = decoder_output.data.topk(1)
         ni = topi[0][0]
-
-        decoded_words.append(output_lang.index2word[ni])
+        decoded_words.append(output_lang.index2word[ni.item()])
 
         decoder_input = Variable(torch.LongTensor([[ni]]))
         decoder_input = decoder_input.cuda() if use_cuda else decoder_input
 
-    return decoded_words, decoder_attentions[:di+1,:len(encoder_outputs)-1]
+    return decoded_words, decoder_attentions[:di+1,:len(encoder_outputs)]
 
 def evaluateRandomly(encoder, decoder, pairs, input_lang, output_lang,use_cuda, n=5):
     for i in range(n):

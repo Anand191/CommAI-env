@@ -1,4 +1,6 @@
 import numpy as np
+import itertools
+import random
 
 
 tables1 = np.arange(1,7,dtype=int).tolist()
@@ -37,9 +39,10 @@ class longer_splits(object):
             all_tup = list(zip(*master))
 
         elif(self.split=="new"):
-            for i in range (self.composition_length):
-                master.append(np.random.choice(tables2, self.sample).tolist())
-            all_tup = list(zip(*master))
+            # for i in range (self.composition_length):
+            #     master.append(np.random.choice(tables2, self.sample).tolist())
+            all_tup = list(itertools.product(tables2, repeat=self.composition_length)) #list(zip(*master))
+            all_tup = random.sample(all_tup, self.sample)
 
         else:
             raise ValueError("invalid split type")

@@ -26,12 +26,12 @@ def inference(encoder, decoder, input_variable, target_variable,criterion2, use_
     decoder_hidden = encoder_hidden
 
     attn_targets = torch.FloatTensor(np.eye(input_length))
-    ########################################################################################################################
+    #########################################################################################################################
     i = 0
     ponder_step = input_length
     attn_loss = 0
     copy_loss = 0
-    interim_loss = 0
+    interim_loss = torch.tensor(0.0).cuda() if use_cuda else torch.tensor(0.0)
     target_loss = 0
     losses = {'final_target_loss': 0, 'copy_loss': 0, 'attn_loss': 0, 'interim_loss': 0}
     accuracies = {'word_level': 0, 'seq_level': 0, 'final_target': 0}
@@ -49,7 +49,7 @@ def inference(encoder, decoder, input_variable, target_variable,criterion2, use_
         ni = topi[0][0]
         if(di ==0):
             copy_loss += criterion2(decoder_output, target_variable[0])
-        else:
+        elif (di < ponder_step-1):
             interim_loss += criterion2(decoder_output, target_variable[di])
         decoder_input = Variable(torch.LongTensor([[ni]]))
         decoder_input = decoder_input.cuda() if use_cuda else decoder_input
@@ -72,11 +72,11 @@ def inference(encoder, decoder, input_variable, target_variable,criterion2, use_
 
     if (use_attn):
         target_loss += (attn_loss/ponder_step)
-        losses['attn_loss'] = attn_loss.item() #data[0] / ponder_step
+        losses['attn_loss'] = attn_loss.item()/ponder_step #data[0] / ponder_step
 
     if (use_interim):
-        target_loss += (interim_loss/ (ponder_step-1))
-        losses['interim_loss'] = interim_loss.item() #data[0] / (ponder_step-1)
+        target_loss += (interim_loss/ (ponder_step-2))
+        losses['interim_loss'] = interim_loss.item()/(ponder_step-2) #data[0] / (ponder_step-1)
     metrics = Metrics()
     target_outputs = target_variable.cpu().data.squeeze(-1).numpy().tolist()
     #target_outputs = target_variable.cpu().data[:-1].squeeze(-1).numpy().tolist()

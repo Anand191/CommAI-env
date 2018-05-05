@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 
-df = pd.read_csv('./data2/composed_train.csv', delimiter='\t')
+df = pd.read_csv('./data/composed_train.csv', delimiter='\t')
 df[['ipt','tab1', 'tab2']] = df['ipt'].str.split(' ', expand=True)
 df[['copy','interim', 'opt']] = df['copy'].str.split(' ',expand=True)
 df['compositions'] = df[['tab1', 'tab2']].apply(lambda x: ' '.join(x), axis=1)
@@ -54,4 +54,4 @@ print(sudoku)
 #         print("{} found -- {} left".format(count, left))
 #         sudoku[com].iloc[j] = op[0]
 #         Ybucket[op[0]] += 1
-#sudoku.to_csv('./data2/balanced.csv', sep='\t', index=False)
+sudoku.to_csv('./data/balanced.csv', sep='\t', index=False)
