@@ -49,12 +49,13 @@ print(opt)
 #     plt.close(fig)
 
 print('*********Run in Inference Mode**********')
-fnames = ['train.csv','validation.csv', 'test1_heldout2.csv','test2_subset2.csv', 'test3_hybrid2.csv',
-          'test4_unseen2.csv']
+folders = ['Test1', 'Test2', 'Test3']
+fnames = ['train.csv','validation.csv', 'test1_heldout2.csv','test2_subset2.csv', 'hybrid_UnseenSeen.csv',
+          'hybrid_SeenUnseen.csv','test4_unseen2.csv'] #'test3_hybrid2.csv',
 split_names = ['seen', 'incremental', 'new']
 longer_names = long_names(opt.max_comp_len)
+tnames = fnames[2:]
 lnames = longer_names.get_lnames(split_names)
-
 fnames = fnames+lnames
 
 path1 = opt.encoder_weights
@@ -84,50 +85,55 @@ class GetData(object):
 
         return (preprocess.tensor_pairs, preprocess.master_data,preprocess.variableFromSentence)
 
-preprocessing = GetData(opt.data)
-all_pairs, master_data, vfs = preprocessing.data_prep(input_vocab, output_vocab)
-plot_data = np.zeros((len(lnames), 5), dtype=object)
-plot_test = np.zeros((len(list(set(fnames)-set(lnames)))-2,4), dtype=object)
-infer_pairs = all_pairs[2:]
-comp_len = []
-for n in range(3,opt.max_comp_len+1):
-    arr = np.repeat(n,3).tolist()
-    comp_len += arr
-plot_data[:,0] = np.asarray(comp_len)
-j = 0
-k = 0
-for i, ip in enumerate(infer_pairs):
-    res = inferIters(encoder, decoder, ip, use_cuda, opt.use_copy, opt.use_attn, opt.use_interim, opt.train_attn, fnames[2:][i])
-    if(fnames[2:][i] not in lnames):
-        plot_test[k,:] = np.asarray(list(res))
-        k += 1
-        #continue
-    else:
-        plot_data[j,1:] = np.asarray(list(res))
-        j += 1
-    #print(plot_test)
-fd = pd.DataFrame(plot_test, columns=['compName', 'wordacc', 'seqacc', 'finaltargetacc'])
-fd.to_csv(os.path.join(opt.infer,'plot_test.csv'), index=False)
-df = pd.DataFrame(plot_data, columns=['compLength', 'compName', 'wordacc', 'seqacc', 'finaltargetacc'])
-df.to_csv(os.path.join(opt.infer,'plot_longer.csv'), index=False)
+# for x, fd in enumerate(folders):
+#     preprocessing = GetData(os.path.join(opt.data,fd))
+#     all_pairs, master_data, vfs = preprocessing.data_prep(input_vocab, output_vocab)
+#     plot_data = np.zeros((len(lnames), 5), dtype=object)
+#     plot_test = np.zeros((len(tnames),4), dtype=object)
+#     infer_pairs = all_pairs[2:]
+#     comp_len = []
+#     for n in range(3,opt.max_comp_len+1):
+#         arr = np.repeat(n,3).tolist()
+#         comp_len += arr
+#     plot_data[:,0] = np.asarray(comp_len)
+#
+#     j = 0
+#     k = 0
+#     for i, ip in enumerate(infer_pairs):
+#         res = inferIters(encoder, decoder, ip, use_cuda, opt.use_copy, opt.use_attn, opt.use_interim, opt.train_attn, fnames[2:][i])
+#         if(fnames[2:][i] not in lnames):
+#             plot_test[k,:] = np.asarray(list(res))
+#             k += 1
+#         else:
+#             #continue
+#             plot_data[j,1:] = np.asarray(list(res))
+#             j += 1
+#         #print(plot_test)
+#     fd = pd.DataFrame(plot_test, columns=['compName', 'wordacc', 'seqacc', 'finaltargetacc'])
+#     fd.to_csv(os.path.join(opt.infer,'plot_test_{}.csv'.format(x)), index=False)
+#     df = pd.DataFrame(plot_data, columns=['compLength', 'compName', 'wordacc', 'seqacc', 'finaltargetacc'])
+#     df.to_csv(os.path.join(opt.infer,'plot_longer_{}.csv'.format(x)), index=False)
 
 ########################################################################################################################
-# print('*********Begin Plotting*********')
-#
-# data_name = ['train', 'validation', 'heldout', 'subset', 'hybrid', 'unseen', 'longer_seen', 'longer_indremental', 'longer_new']
-#
-# for step, data in enumerate(master_data):
-#     if(data_name[step].split('_')[0]=='longer'):
-#         np.random.shuffle(data)
-#     for i in range(0, data.shape[0]):
-#         ipt_sentence = data[i, 0]
-#         if (len(ipt_sentence.split(' ')) == 2 and data_name[step] != "train"):
-#             continue
-#         else:
-#             if(data_name[step] == 'longer' and i==100):
-#                 break
-#             name = os.path.join(opt.infer, data_name[step],'{}{}'.format(data_name[step], i))
-#             evaluateAndShowAttention(ipt_sentence, encoder, decoder, master_data[0], input_vocab, output_vocab,
-#                                      use_cuda,vfs, name, opt.train_attn)
+print('*********Begin Plotting*********')
+preprocessing = GetData(os.path.join(opt.data,'Test1'))
+all_pairs, master_data, vfs = preprocessing.data_prep(input_vocab, output_vocab)
+
+data_name = ['train', 'validation', 'hld_ipt', 'hld_comp', 'hld_tab_us', 'hld_tab_su', 'new_comp', 'hld_comp_3',
+             'hld_tab_3', 'new_comp_3']
+
+for step, data in enumerate(master_data):
+    if(data_name[step].split('_')[-1] == '3'):
+        np.random.shuffle(data)
+    for i in range(0, data.shape[0]):
+        ipt_sentence = data[i, 0]
+        if (len(ipt_sentence.split(' ')) == 2 and data_name[step] != "train"):
+            continue
+        else:
+            if(data_name[step].split('_')[-1] == '3' and i==100):
+                break
+            name = os.path.join(opt.infer, 'AttentionPlots', data_name[step],'{}{}'.format(data_name[step], i))
+            evaluateAndShowAttention(ipt_sentence, encoder, decoder, master_data[0], input_vocab, output_vocab,
+                                     use_cuda,vfs, name, opt.train_attn)
 
 
