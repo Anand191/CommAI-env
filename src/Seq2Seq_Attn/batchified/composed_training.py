@@ -73,7 +73,7 @@ def trainIters(encoder, decoder, n_iters, training_pairs, test_pairs, infer_pair
     #===================================================================================================================
 
     ####################################################################################################################
-    best_loss = 5.0
+    best_loss = 6.0
     saver_e = checkpoint(encoder,encoder_optimizer, input_vocab, output_vocab, echk)
     saver_d = checkpoint(decoder,decoder_optimizer, input_vocab, output_vocab, dchk)
     ####################################################################################################################
@@ -96,25 +96,25 @@ def trainIters(encoder, decoder, n_iters, training_pairs, test_pairs, infer_pair
                                    use_interim = use_interim, train_attn=train_attn, clip=clip, lr=learning_rate
                                    )
             temp_loss += loss
-            l0 += other['final_target_loss']
-            l1 += other['copy_loss']
             l2 += other['attn_loss']
-            l3 += other['interim_loss']
+            # l0 += other['final_target_loss']
+            # l1 += other['copy_loss']
+            # l3 += other['interim_loss']
 
             temp_acc += acc['final_target']
             a1 += acc['word_level']
             a2 += acc['seq_level']
 
         print_loss_total += (temp_loss/len(training_pairs))
+        attn_train += (l2 / len(training_pairs))
         plot_loss_total += (temp_loss/len(training_pairs))
 
         print_acc_total += (temp_acc/len(training_pairs))
         plot_acc_total += (a2 / len(training_pairs))
 
-        target_train += (l0/len(training_pairs))
-        copy_train += (l1/len(training_pairs))
-        attn_train += (l2 / len(training_pairs))
-        interim_train += (l3 / len(training_pairs))
+        # target_train += (l0/len(training_pairs))
+        # copy_train += (l1/len(training_pairs))
+        # interim_train += (l3 / len(training_pairs))
 
         word_train += (a1/wc_train)
         seq_train += (a2/len(training_pairs))
@@ -134,67 +134,67 @@ def trainIters(encoder, decoder, n_iters, training_pairs, test_pairs, infer_pair
                                           )
 
             test_l += loss_t
-            dl0 += other_t['final_target_loss']
-            dl1 += other_t['copy_loss']
             dl2 += other_t['attn_loss']
-            dl3 += other_t['interim_loss']
+            #dl0 += other_t['final_target_loss']
+            #dl1 += other_t['copy_loss']
+            #dl3 += other_t['interim_loss']
 
             test_a += acc_t['final_target']
             da1 += acc_t['word_level']
             da2 += acc_t['seq_level']
+        print_test_loss += (test_l / len(test_pairs))
+        attn_test += (dl2 / len(test_pairs))
+        plot_test_loss += (test_l / len(test_pairs))
 
         print_test_acc += (test_a / len(test_pairs))
         plot_test_acc += (da2 / len(test_pairs))
 
-        print_test_loss += (test_l / len(test_pairs))
-        plot_test_loss += (test_l / len(test_pairs))
-
-        target_test += (dl0/len(test_pairs))
-        copy_test += (dl1/len(test_pairs))
-        attn_test += (dl2/len(test_pairs))
-        interim_test += (dl3/len(test_pairs))
+        # target_test += (dl0/len(test_pairs))
+        # copy_test += (dl1/len(test_pairs))
+        # interim_test += (dl3/len(test_pairs))
 
         word_test += (da1/wc_dev)
         seq_test += (da2/len(test_pairs))
 
         if iter % print_every == 0:
             print_loss_avg = print_loss_total / print_every
-            train_target_avg = target_train/ print_every
-            train_copy_avg = copy_train/ print_every
-            train_attn_avg = attn_train/ print_every
-            train_interim_avg = interim_train/ print_every
-
+            train_attn_avg = attn_train / print_every
             print_acc_avg = print_acc_total / print_every
             train_word_avg = word_train/ print_every
             train_seq_avg = seq_train/ print_every
 
             print_test_l_avg = print_test_loss / print_every
-            dev_target_avg = target_test/ print_every
-            dev_copy_avg = copy_test/ print_every
-            dev_attn_avg = attn_test/ print_every
-            dev_interim_avg = interim_test/ print_every
-
+            dev_attn_avg = attn_test / print_every
             print_test_a_avg = print_test_acc / print_every
-            dev_word_avg = word_test/ print_every
-            dev_seq_avg = seq_test/ print_every
+            dev_word_avg = word_test / print_every
+            dev_seq_avg = seq_test / print_every
 
-            print_loss_total = 0
-            target_train, copy_train, attn_train, interim_train = 0, 0, 0, 0
+            print_loss_total, attn_train = 0,0
             print_acc_total = 0
             word_train, seq_train = 0, 0
 
+            print_test_loss, attn_test = 0, 0
             print_test_acc = 0
-            target_test, copy_test, attn_test, interim_test = 0, 0, 0, 0
-            print_test_loss = 0
             word_test, seq_test = 0, 0
+#=======================================================================================================================
+            # train_target_avg = target_train/ print_every
+            # train_copy_avg = copy_train/ print_every
+            # train_attn_avg = attn_train/ print_every
+            # train_interim_avg = interim_train/ print_every
 
+            # dev_target_avg = target_test/ print_every
+            # dev_copy_avg = copy_test/ print_every
+            # dev_attn_avg = attn_test/ print_every
+            # dev_interim_avg = interim_test/ print_every
 
-            print('%s %s (%d %d%%) %s: %.4f %s: %.4f %s: %.4f %s:%.4f'
+            # target_train, copy_train, attn_train, interim_train = 0, 0, 0, 0
+            #target_test, copy_test, attn_test, interim_test = 0, 0, 0, 0
+#=======================================================================================================================
+
+            print('%s %s (%d %d%%) %s: %.4f %s:%.4f'
                   % ("Train",timeSince(start, iter / n_iters),iter, iter / n_iters * 100,
-                     "Average Final Target Loss", train_target_avg,
-                     "Average Copy Loss",train_copy_avg,
+                     "Final Sequence Loss", print_loss_avg,
                      "Attention Loss", train_attn_avg,
-                     "Average Intermediate Loss",train_interim_avg,
                      ))
             print('')
             print('%s %s (%d %d%%) %s:%.4f %s:%.4f %s:%.4f'% ("Train",timeSince(start, iter / n_iters),iter,
@@ -204,12 +204,10 @@ def trainIters(encoder, decoder, n_iters, training_pairs, test_pairs, infer_pair
                                                               "Final Target Accuracy", print_acc_avg
                                                               ))
             print('')
-            print('%s %s (%d %d%%) %s: %.4f %s: %.4f %s: %.4f %s:%.4f'
+            print('%s %s (%d %d%%) %s: %.4f %s:%.4f'
                   % ("Validation", timeSince(start, iter / n_iters), iter, iter / n_iters * 100,
-                     "Average Final Target Loss",dev_target_avg,
-                     "Average Copy Loss", dev_copy_avg,
+                     "Final Sequence Loss",print_test_l_avg,
                      "Attention Loss", dev_attn_avg,
-                     "Average Intermediate Loss", dev_interim_avg
                      ))
             print('')
             print('%s %s (%d %d%%) %s:%.4f %s:%.4f %s:%.4f' % ("Validation", timeSince(start, iter / n_iters), iter,

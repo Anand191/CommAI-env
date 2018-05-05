@@ -33,7 +33,7 @@ def inference(encoder, decoder, input_variable, target_variable,criterion2, use_
     copy_loss = 0
     interim_loss = torch.tensor(0.0).cuda() if use_cuda else torch.tensor(0.0)
     target_loss = 0
-    losses = {'final_target_loss': 0, 'copy_loss': 0, 'attn_loss': 0, 'interim_loss': 0}
+    losses = {'total_loss': 0, 'copy_loss': 0, 'attn_loss': 0, 'interim_loss': 0}
     accuracies = {'word_level': 0, 'seq_level': 0, 'final_target': 0}
     final_outputs = []
     ########################################################################################################################
@@ -47,39 +47,35 @@ def inference(encoder, decoder, input_variable, target_variable,criterion2, use_
         attn_loss += criterion2(torch.log(decoder_attention).squeeze(0), attn_target)
         topv, topi = decoder_output.data.topk(1)
         ni = topi[0][0]
-        if(di ==0):
-            copy_loss += criterion2(decoder_output, target_variable[0])
-        elif (di < ponder_step-1):
-            interim_loss += criterion2(decoder_output, target_variable[di])
         decoder_input = Variable(torch.LongTensor([[ni]]))
         decoder_input = decoder_input.cuda() if use_cuda else decoder_input
         final_outputs.append(decoder_input.data[0][0])
+        target_loss += criterion2(decoder_output, target_variable[di])
         i += 1
 
-    target_loss += criterion2(decoder_output, target_variable[-1])
-    losses['final_target_loss'] = target_loss.item() #data[0] #/ ponder_step
-    # tv, ti = decoder_output.data.topk(1)
-    # do = ti[0][0]
-    # chk = Variable(torch.LongTensor([do]))
-    # chk = chk.cuda() if use_cuda else chk
-    # if (chk.data[0] == target_variable[1].data[0]):
-    #     acc = 1
-    # else:
-    #     acc = 0
-    if (use_copy):
-        target_loss += copy_loss
-        losses['copy_loss'] = copy_loss.item() #.data[0] #/ ponder_step
+    losses['total_loss'] = target_loss.item() #data[0] #/ ponder_step
 
     if (use_attn):
-        target_loss += (attn_loss/ponder_step)
-        losses['attn_loss'] = attn_loss.item()/ponder_step #data[0] / ponder_step
+        target_loss += (attn_loss)
+        losses['attn_loss'] = attn_loss.item() #data[0] / ponder_step
+    #===================================================================================================================
+    # if (di == 0):
+    #     copy_loss += criterion2(decoder_output, target_variable[0])
+    # elif (di < ponder_step - 1):
+    #     interim_loss += criterion2(decoder_output, target_variable[di])
+    #
+    # if (use_copy):
+    #     target_loss += copy_loss
+    #     losses['copy_loss'] = copy_loss.item()  # .data[0] #/ ponder_step
+    #
+    # if (use_interim):
+    #     target_loss += (interim_loss/ (ponder_step-2))
+    #     losses['interim_loss'] = interim_loss.item()/(ponder_step-2) #data[0] / (ponder_step-1)
+    # target_outputs = target_variable.cpu().data[:-1].squeeze(-1).numpy().tolist()
+    #===================================================================================================================
 
-    if (use_interim):
-        target_loss += (interim_loss/ (ponder_step-2))
-        losses['interim_loss'] = interim_loss.item()/(ponder_step-2) #data[0] / (ponder_step-1)
     metrics = Metrics()
     target_outputs = target_variable.cpu().data.squeeze(-1).numpy().tolist()
-    #target_outputs = target_variable.cpu().data[:-1].squeeze(-1).numpy().tolist()
     accuracies['word_level'] = metrics.word_level(final_outputs, target_outputs)
     accuracies['seq_level'] = metrics.seq_level(final_outputs, target_outputs)
     accuracies['final_target'] = metrics.final_target(final_outputs, target_outputs)
@@ -110,10 +106,10 @@ def inferIters(encoder, decoder, infer_pairs, use_cuda=False, use_copy=True, use
                                       use_copy=use_copy, use_attn=use_attn, use_interim=use_interim,
                                       train_attn=train_attn)
         test_l += loss_t
-        tl0 += other_t['final_target_loss']
-        tl1 += other_t['copy_loss']
         tl2 += other_t['attn_loss']
-        tl3 += other_t['interim_loss']
+        # tl0 += other_t['final_target_loss']
+        # tl1 += other_t['copy_loss']
+        # tl3 += other_t['interim_loss']
 
         test_a += acc_t['final_target']
         ta1 += acc_t['word_level']
@@ -124,22 +120,20 @@ def inferIters(encoder, decoder, infer_pairs, use_cuda=False, use_copy=True, use
     seq_inf += (ta2 / len(infer_pairs))
 
     print_loss_total += (test_l/len(infer_pairs))
-    target_inf += (tl0 / len(infer_pairs))
-    copy_inf += (tl1 / len(infer_pairs))
     attn_inf += (tl2 / len(infer_pairs))
-    interim_inf += (tl3 / len(infer_pairs))
+    # target_inf += (tl0 / len(infer_pairs))
+    # copy_inf += (tl1 / len(infer_pairs))
+    # interim_inf += (tl3 / len(infer_pairs))
 
     name = name.split('.')[0]
     name = name.split('_')[-1]
-    print('')
-    # print('%s  %s: %.4f %s: %.4f %s: %.4f %s:%.4f'
-    #       % (name,
-    #          "Average Final Target Loss", target_inf,
-    #          "Average Copy Loss", copy_inf,
-    #          "Attention Loss", attn_inf,
-    #          "Average Intermediate Loss", interim_inf
-    #          ))
     # print('')
+    # print('%s  %s: %.4f %s:%.4f'
+    #       % (name,
+    #          "Final Sequence Loss", print_loss_total,
+    #          "Attention Loss", attn_inf,
+    #          ))
+    print('')
     print('%s %s:%.4f %s:%.4f %s:%.4f' % (name,
                                           "Word Level Accuracy", word_inf,
                                           "Sequence Level Accuracy", seq_inf,
